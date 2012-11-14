@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<level>
+  <barrage id="bship" damage="100" file="bullets/simple.xml"/>
+  <barrage id="hostilepattern" file="patterns/hostilepattern.xml"/>
+  <barrage id="hostilepatterninv" file="patterns/hostilepatterninv.xml"/>
+  <barrage id="bhostile01" file="bullets/multiple.xml">
+    <renderable>
+      <dualcircle width="6" innerwidth="5" color="0x00FFFFFF" color2="0x0000FFFF"/>
+    </renderable>
+  </barrage>
+  <barrage id="hostilehoming" file="bullets/homing3.xml">
+  <renderable>
+    <dualcircle width="6" innerwidth="5" color="0x00FFFF00" color2="0x00FF0000"/>
+  </renderable>
+  </barrage>
+  <barrage id="circleatonce" file="bullets/circleatonce.xml"/>
+  <barrage id="middlebosspattern" file="patterns/middlebosspattern.xml"/>
+  <barrage id="multiple" file="bullets/multiple.xml"/>
+  <barrage id="multipleaim" file="bullets/multipleaim.xml"/>
+  <boundingbox top="650,490" bottom="-10,-10"/>
+  <ship>
+    <boundingbox top="10,10" bottom="-10,-10"/>
+    <barrage id="bship"/>
+  </ship>
+  <hostile id="queue1">
+    <boundingbox top="10,10" bottom="-10,-10"/>
+    <barrage id="bhostile01"/>
+    <life value="100"/>
+    <score value="100"/>
+    <renderable>
+      <dualcircle width="20" innerwidth="15" color="0x00FFFFFF" color2="0x0000FFFF"/>
+    </renderable>
+  </hostile>
+  <hostile id="queue2">
+    <boundingbox top="10,10" bottom="-10,-10"/>
+    <barrage id="bhostile01"/>
+    <life value="100"/>
+    <score value="100"/>
+  </hostile>
+  <hostile id="hostile02">
+    <boundingbox top="10,10" bottom="-10,-10"/>
+    <barrage id="hostilehoming"/>
+    <life value="300"/>
+    <score value="500"/>
+  </hostile>
+   <hostile id="middleboss01">
+    <boundingbox top="40,40" bottom="-40,-40"/>
+    <barrage id="multipleaim"/>
+    <life value="5000"/>
+    <score value="5000"/>
+    <renderable>
+      <dualcircle width="80" innerwidth="75" color="0x00FFFFFF" color2="0x0000FFFF"/>
+    </renderable>
+  </hostile>
+   <hostile id="easyboss01">
+    <boundingbox top="20,20" bottom="-20,-20"/>
+    <barrage id="circleatonce"/>
+    <life value="1000"/>
+    <score value="1000"/>
+    <renderable>
+      <dualcircle width="40" innerwidth="35" color="0x00FFFFFF" color2="0x0000FFFF"/>
+    </renderable>
+  </hostile>
+  <sequence>
+
+  <!-- 8 easy targets with no pattern top to bottom -->
+  <hostile t="1000" id="queue1" pos="590,10" speed="60" direction="45" />
+  <hostile t="1000" id="queue1" pos="50,10" speed="60" direction="-45"/>
+  <hostile t="2000" id="queue1" pos="590,10" speed="60" direction="45" blocking="true"/>
+  <hostile t="2000" id="queue1" pos="50,10" speed="60" direction="-45" blocking="true"/>
+  <hostile t="3000" id="queue1" pos="590,10" speed="60" direction="45"/>
+  <hostile t="3000" id="queue1" pos="50,10" speed="60" direction="-45"/>
+  <hostile t="4000" id="queue1" pos="590,10" speed="60" direction="45"/>
+  <hostile t="4000" id="queue1" pos="50,10" speed="60" direction="-45"/>
+
+
+  <!-- 8 easy targets with no pattern bottom to top -->
+  <hostile t="10000" id="queue1" pos="590,470" speed="60" direction="135"/>
+  <hostile t="10000" id="queue1" pos="50,470" speed="60" direction="-135"/>
+  <hostile t="11000" id="queue1" pos="590,470" speed="60" direction="135"/>
+  <hostile t="11000" id="queue1" pos="50,470" speed="60" direction="-135"/>
+  <hostile t="12000" id="queue1" pos="590,470" speed="60" direction="135"/>
+  <hostile t="12000" id="queue1" pos="50,470" speed="60" direction="-135"/>
+  <hostile t="13000" id="queue1" pos="590,470" speed="60" direction="135"/>
+  <hostile t="13000" id="queue1" pos="50,470" speed="60" direction="-135"/>
+
+
+   <!-- 8 easy targets with no pattern vertical bottom to top -->
+  <hostile t="18000" id="queue1" pos="590,470" speed="60" direction="180"/>
+  <hostile t="18000" id="queue1" pos="50,470" speed="60" direction="180"/>
+  <hostile t="19000" id="queue1" pos="590,470" speed="60" direction="180"/>
+  <hostile t="19000" id="queue1" pos="50,470" speed="60" direction="180"/>
+  <hostile t="20000" id="queue1" pos="590,470" speed="60" direction="180"/>
+  <hostile t="20000" id="queue1" pos="50,470" speed="60" direction="180"/>
+  <hostile t="21000" id="queue1" pos="590,470" speed="60" direction="180"/>
+  <hostile t="21000" id="queue1" pos="50,470" speed="60" direction="180"/>
+
+
+  <!-- MIDDLE BOSS01 -->
+  <hostile t="26000" id="middleboss01" pos="320,10" speed="50" direction="0" barrageid="middlebosspattern"/>
+
+  <!-- EASY BOSS01 fire a circle pattern -->
+  <hostile t="2000" id="easyboss01" pos="320,10" speed="50" direction="0" barrageid="middlebosspattern" blocking="true"/>
+  <hostile t="2000" id="easyboss01" pos="100,10" speed="50" direction="0" barrageid="middlebosspattern"/>
+  <hostile t="2000" id="easyboss01" pos="540,10" speed="50" direction="0" barrageid="middlebosspattern"/>
+
+  <!-- 8 easy targets with rotational pattern -->
+  <hostile t="2000" id="queue1" pos="440,10" speed="60" direction="0" barrageid="hostilepattern" blocking="true"/>
+  <hostile t="2000" id="queue1" pos="200,10" speed="60" direction="0" barrageid="hostilepatterninv"/>
+  <hostile t="3000" id="queue1" pos="440,10" speed="60" direction="0" barrageid="hostilepattern"/>
+  <hostile t="3000" id="queue1" pos="200,10" speed="60" direction="0" barrageid="hostilepatterninv"/>
+  <hostile t="4000" id="queue1" pos="440,10" speed="60" direction="0" barrageid="hostilepattern"/>
+  <hostile t="4000" id="queue1" pos="200,10" speed="60" direction="0" barrageid="hostilepatterninv"/>
+  <hostile t="5000" id="queue1" pos="440,10" speed="60" direction="0" barrageid="hostilepattern"/>
+  <hostile t="5000" id="queue1" pos="200,10" speed="60" direction="0" barrageid="hostilepatterninv"/>
+
+  <!-- 4 medium target that fires aiming pattern -->
+  <hostile t="10000" id="hostile02" pos="550,10" speed="50" direction="20"/>
+  <hostile t="10000" id="hostile02" pos="100,10" speed="50" direction="-20"/>
+  <hostile t="11000" id="hostile02" pos="540,10" speed="50" direction="20"/>
+  <hostile t="11000" id="hostile02" pos="100,10" speed="50" direction="-20"/>
+
+
+
+  </sequence>
+</level>

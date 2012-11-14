@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE bulletml SYSTEM "http://www.asahi-net.or.jp/~cs8k-cyu/bulletml/bulletml.dtd">
+
+<bulletml type="vertical"
+          xmlns="http://www.asahi-net.or.jp/~cs8k-cyu/bulletml">
+
+<action label="top">
+  <wait>200</wait>
+    <action>
+      <changeDirection>
+        <speed>0</speed>
+        <term>2</term>
+      </changeDirection>
+
+    </action>
+
+</action>
+
+</bulletml>
