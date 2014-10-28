@@ -31,15 +31,16 @@
 #include "Hostile.h"
 #include "HostileFactory.h"
 #include "RenderableAbstractFactory.h"
+#include "ScoreHandler.h"
 
 Game::Game(void)
 {
 	FastMath::init();
 	currentLevelPosition = 0;
-	score = 0;
 	onDestroyCallback = NULL;
 	remainingPlayerLife = 0;
-	
+	scoreHandler = new SimpleScoreHandler();
+	scoreHandler->resetScore();
 }
 
 
@@ -49,7 +50,7 @@ Game::~Game(void)
 
 int Game::getScore()
 {
-	return score;
+	return scoreHandler->getScore();
 }
 
 void Game::loadCurrentLevel(RenderableAbstractFactory * renderableFactory)
@@ -132,10 +133,10 @@ void Game::checkHostileCollision()
 						{
 							if (this->onDestroyCallback != NULL)
 							{
-								this->onDestroyCallback(this->onDestroyCallbackUserData,(*hostileInstanceList)[j]->getPosition().getX(),(*hostileInstanceList)[j]->getPosition().getY());
+								this->onDestroyCallback(this->onDestroyCallbackUserData,i,NULL,(*hostileInstanceList)[j],(*hostileInstanceList)[j]->getPosition().getX(),(*hostileInstanceList)[j]->getPosition().getY());
 							}
 
-							this->score += (*hostileInstanceList)[j]->getScore();
+							this->scoreHandler->updateScore((*hostileInstanceList)[j]->getScore(),NULL);
 							(*hostileInstanceList)[j]->deactive();
 						}
 					}
@@ -170,7 +171,7 @@ void Game::checkShipCollision()
 					//exit(0);
 						if (this->onDestroyCallback != NULL)
 						{
-							this->onDestroyCallback(this->onDestroyCallbackUserData,this->currentLevel->getShip()->getPosition().getX(),this->currentLevel->getShip()->getPosition().getY());
+							this->onDestroyCallback(this->onDestroyCallbackUserData,i,this->currentLevel->getShip(),NULL,this->currentLevel->getShip()->getPosition().getX(),this->currentLevel->getShip()->getPosition().getY());
 						}
 
 					this->currentLevel->getShip()->setActive(false);
@@ -237,7 +238,7 @@ int Game::getCurrentLevelPosition()
 	return this->currentLevelPosition;
 }
 
-void Game::setOnDestroyCallback(void (*onDestroyCallback)(void * userdata, float x, float y),void * userdata)
+void Game::setOnDestroyCallback(void (*onDestroyCallback)(void * userdata, unsigned int bulletId,Ship*ship,HostileInstance*hostile, float x, float y),void * userdata)
 {
 	this->onDestroyCallback = onDestroyCallback;
 	this->onDestroyCallbackUserData = userdata;

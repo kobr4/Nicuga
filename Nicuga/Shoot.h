@@ -59,6 +59,7 @@ public:
 	void changeSpeed(float newDirection);
 	float getDirection();
 	float getSpeed();
+	void setRenderable(IRenderable * renderable);
 
 private:
 	bool active;
@@ -70,5 +71,6 @@ private:
 	float speed;
 	float direction;
 	BarrageInstance * barrageInstance;
+	IRenderable * renderable;
 };
 

@@ -93,7 +93,7 @@ void Ship::runBarrage(long dt)
 	for (unsigned int i = 0;i < this->barrageList.size();i++)
 	{
 		if (this->barrageList[i]->isActive())
-		{
+		{			
 			this->barrageList[i]->run(dt);
 		}
 	}

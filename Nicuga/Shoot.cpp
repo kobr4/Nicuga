@@ -108,18 +108,34 @@ void Shoot_get_aim_direction_callback(void *pUserData, float *pfDirection)
 	
 	Shoot * bullet = (Shoot*)pUserData;
 	Vector2D aimAt = bullet->getBarrageInstance()->getBarrageManager()->getAimAtPosition();
-	float adj = -(aimAt.getX() - bullet->getPosition().getX());
+	float adj = (aimAt.getX() - bullet->getPosition().getX());
 	float opp = (aimAt.getY() - bullet->getPosition().getY());
 	float deg;
 
+	       /*             
+	if (adj >= 0.0)
+		deg = FastMath::fastArcTan(adj/opp) * (float)FastMath::M_180_PI;
+	else
+		deg =  180 + FastMath::fastArcTan(-adj/opp) * (float)FastMath::M_180_PI;
+		*/
+	
 	if (opp >= 0.0)
 		deg = FastMath::fastArcTan(adj/opp) * (float)FastMath::M_180_PI;
 	else
 		deg =  180 - FastMath::fastArcTan(adj/-opp) * (float)FastMath::M_180_PI;
+	
+	//deg = FastMath::fastArcTan(adj/opp) * (float)FastMath::M_180_PI;
+	int tmpdir =(int)(*pfDirection)%360;
+	if (abs(tmpdir - deg) > abs(tmpdir - 360.f + deg)) {
+		//printf("pfDirection=%f\n",*pfDirection);
+		*pfDirection = 360.f - deg;
 
-
-	*pfDirection = deg;
-	//printf("Shoot_get_aim_direction_callback %f %f %f\n",deg,opp,adj);
+	} else {
+		*pfDirection = deg;
+	}
+	
+	//*pfDirection = deg;
+	//printf("Shoot_get_aim_direction_callback %f %f %f target(%f,%f)\n",deg,opp,adj,aimAt.getX(),aimAt.getY());
 }
    
 void Shoot_get_direction_callback(void *pUserData, float *pfDirection)
@@ -209,5 +225,10 @@ int Shoot::getDamage()
 
 IRenderable * Shoot::getRenderable()
 {
-	return this->barrageInstance->getRenderable();
+	//return this->barrageInstance->getRenderable();
+	return renderable;
+}
+
+void Shoot::setRenderable(IRenderable * renderable) {
+	this->renderable = renderable;
 }

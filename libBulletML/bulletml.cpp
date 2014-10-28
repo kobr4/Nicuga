@@ -470,6 +470,7 @@ int run_item(tExecutionContext * pCtxt)
                break;
             case AIM : 
 				  //puts("AIMING");
+				  fTmpFloat = pCtxt->fDirection;
 				  pCtxt->get_aim_direction_callback(pCtxt->pUserData, &fTmpFloat);
 				  pCtxt->fDirection = fTmpFloat;
 				  break;
@@ -494,9 +495,13 @@ int run_item(tExecutionContext * pCtxt)
               {
              
             case AIM : 
+			   
+			   pCtxt->get_direction_callback(pCtxt->pUserData, &pCtxt->fDirection);
+			   fTmpFloat = pCtxt->fDirection;
                pCtxt->get_aim_direction_callback(pCtxt->pUserData, &fTmpFloat);
-               pCtxt->get_direction_callback(pCtxt->pUserData, &pCtxt->fDirection);
+               
                pCtxt->fStepDirection = fTmpFloat + pCtxt->fStepDirection;
+			   //pCtxt->fStepDirection = fTmpFloat;
                break; 
             case RELATIVE :
                pCtxt->get_direction_callback(pCtxt->pUserData, &fTmpFloat);

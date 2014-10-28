@@ -35,6 +35,7 @@
 
 class Level;
 class RenderableAbstractFactory;
+class IScoreHandler;
 class Game
 {
 
@@ -51,13 +52,13 @@ public:
 	int getScore();
 	Level * getCurrentLevel();
 	int getCurrentLevelPosition();
-	void setOnDestroyCallback(void (*onDestroyCallback)(void * userdata, float x, float y),void * userdata);
+	void setOnDestroyCallback(void (*onDestroyCallback)(void * userdata,unsigned int bulletId,Ship * ship, HostileInstance * hostile,float x,float y),void * userdata);
 	int getRemainingPlayerLife();
 	bool isOver();
 	void respawnShip();
 	void setPlayerLives(int lives);
 private:
-	void (*onDestroyCallback)(void * userdata, float x, float y);
+	void (*onDestroyCallback)(void * userdata,unsigned int bulletId,Ship * ship, HostileInstance * hostile,float x,float y);
 	void * onDestroyCallbackUserData;
 	
 	Level * currentLevel;
@@ -69,9 +70,8 @@ private:
 	BoundingBox screenBoundaries;
 	void runHostile(long dt);
 	void onGameUpdate();
-	int score;
 	int remainingPlayerLife;
-	
+	IScoreHandler * scoreHandler;	
 		
 };
 

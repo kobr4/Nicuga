@@ -117,6 +117,7 @@ void BarrageInstance::createBullet(float fSpeed, float fDirection,int iStartValu
 	bullet->setAge(0);
 	bullet->setSpeed(fSpeed);
 	bullet->setDirection(fDirection);
+	bullet->setRenderable(this->getRenderable());
 	if (iStartValue != -1)
 	{
 		bullet->setUseScript(true);

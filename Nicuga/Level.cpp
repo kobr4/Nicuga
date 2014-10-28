@@ -39,7 +39,8 @@
 static char Buff[BUFFSIZE];
 
 static	XML_Parser p;
-static Barrage * currentBarrage;
+//static Barrage * currentBarrage;
+static char currentBarrageId[255];
 void level_start(void *data, const char *el, const char **attr);
 void level_end(void *data, const char *el);
 void barrage_start(void *data, const char *el, const char **attr);
@@ -222,8 +223,11 @@ void level_start(void *data, const char *el, const char **attr) {
 		damagestr = getAttribute("damage",attr,iAttrCount);
 		if (damagestr != NULL)
 			damage = atoi(damagestr);
-		currentBarrage = level->getBarrageManager()->addBarrage(id,file,damage);
+		level->getBarrageManager()->addBarrage(id,file,damage);
 		level->getFriendlyBarrageManager()->addBarrage(id,file,damage);
+		strcpy(currentBarrageId,id);
+
+		
 
 		//Place barrage callback only meant to load renderable tag
 		XML_SetElementHandler(p, barrage_start, barrage_end);
@@ -269,7 +273,8 @@ void barrage_start(void *data, const char *el, const char **attr)
 	{
 	case RENDERABLE :
 		level->getRenderableFactory()->setFactoryCallbacks(p,barrage_start,barrage_end);
-		currentBarrage->setRenderable(level->getRenderableFactory()->getRenderable());
+		level->getBarrageManager()->getBarrage(currentBarrageId)->setRenderable(level->getRenderableFactory()->getRenderable());
+		level->getFriendlyBarrageManager()->getBarrage(currentBarrageId)->setRenderable(level->getRenderableFactory()->getRenderable());
 		break;
 	}
 }
@@ -458,6 +463,16 @@ void Level::run(long dt)
 	this->getBarrageManager()->setAimAtPosition(this->getShip()->getPosition());
 	this->getHostileManager()->run(dt);
 	this->getBarrageManager()->run(dt);
+	
+
+	for (unsigned int i = 0;i < hostileInstanceList->size();i++)
+	{
+		if ((*hostileInstanceList)[i]->isActive())
+		{
+			this->getFriendlyBarrageManager()->setAimAtPosition((*hostileInstanceList)[i]->getPosition());
+			break;
+		}
+	}
 	this->getFriendlyBarrageManager()->run(dt);
 }
 
