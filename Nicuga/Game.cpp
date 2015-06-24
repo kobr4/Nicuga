@@ -38,6 +38,7 @@ Game::Game(void)
 	FastMath::init();
 	currentLevelPosition = 0;
 	onDestroyCallback = NULL;
+	onHitCallback = NULL;
 	remainingPlayerLife = 0;
 	scoreHandler = new SimpleScoreHandler();
 	scoreHandler->resetScore();
@@ -126,6 +127,10 @@ void Game::checkHostileCollision()
 						int life = (*hostileInstanceList)[j]->getLife();
 						life = life - (*bulletList)[i]->getDamage();
 						(*hostileInstanceList)[j]->setLife(life);
+							
+						if (this->onHitCallback != NULL) {
+							this->onHitCallback(this->onHitCallbackUserData,i,NULL,(*hostileInstanceList)[j],(*hostileInstanceList)[j]->getPosition().getX(),(*hostileInstanceList)[j]->getPosition().getY());
+						}
 
 
 						//printf("Hostile hit remaining life: %d\n",life);
@@ -243,6 +248,13 @@ void Game::setOnDestroyCallback(void (*onDestroyCallback)(void * userdata, unsig
 	this->onDestroyCallback = onDestroyCallback;
 	this->onDestroyCallbackUserData = userdata;
 }
+
+void Game::setOnHitCallback(void (*onHitCallback)(void * userdata, unsigned int bulletId,Ship*ship,HostileInstance*hostile, float x, float y),void * userdata)
+{
+	this->onHitCallback = onHitCallback;
+	this->onHitCallbackUserData = userdata;
+}
+
 
 int Game::getRemainingPlayerLife()
 {

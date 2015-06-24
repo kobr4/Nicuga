@@ -53,6 +53,7 @@ public:
 	Level * getCurrentLevel();
 	int getCurrentLevelPosition();
 	void setOnDestroyCallback(void (*onDestroyCallback)(void * userdata,unsigned int bulletId,Ship * ship, HostileInstance * hostile,float x,float y),void * userdata);
+	void setOnHitCallback(void (*onHitCallback)(void * userdata,unsigned int bulletId,Ship * ship, HostileInstance * hostile,float x,float y),void * userdata);
 	int getRemainingPlayerLife();
 	bool isOver();
 	void respawnShip();
@@ -60,6 +61,9 @@ public:
 private:
 	void (*onDestroyCallback)(void * userdata,unsigned int bulletId,Ship * ship, HostileInstance * hostile,float x,float y);
 	void * onDestroyCallbackUserData;
+
+	void (*onHitCallback)(void * userdata,unsigned int bulletId,Ship * ship, HostileInstance * hostile,float x,float y);
+	void * onHitCallbackUserData;
 	
 	Level * currentLevel;
 	int currentLevelPosition;

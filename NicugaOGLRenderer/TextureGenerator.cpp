@@ -267,7 +267,7 @@ void TextureGenerator::generateCircle(int overdraw,int blurFactor,unsigned int *
 	unsigned int * tmp_pixels = new unsigned int[shapeWidth*shapeWidth];
 	generateCircle(tmp_pixels, shapeWidth, color);
 	TextureGenerator::overdraw(pixels,w,w,tmp_pixels,shapeWidth,shapeWidth);
-	TextureGenerator::blurTexture(pixels,w,w,blurFactor);
+	//TextureGenerator::blurTexture(pixels,w,w,blurFactor);
 	delete tmp_pixels;
 }
 

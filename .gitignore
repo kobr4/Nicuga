@@ -11,3 +11,14 @@
 *.lai
 *.la
 *.a
+
+*(1).*
+*.opensdf
+*.sdf
+*.suo
+
+Debug/
+ipch/
+libBulletML/
+Release/
+SDLtest01/

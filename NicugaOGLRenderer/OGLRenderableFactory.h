@@ -31,6 +31,7 @@ class OGLRenderable
 {
 public:
 	Sprite * sprite;
+	int blink_hint;
 	int animationType;
 	OGLRenderable(){
 		animationType = 0;

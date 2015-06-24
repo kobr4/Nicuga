@@ -90,6 +90,7 @@ private :
 	Sprite * spriteCovering;
 	Sprite * spriteTextSurface;
 	Sprite * spriteRectangle;
+	Sprite * spriteCircle;
 
 	BackgroundManager backgroundManager;
 	SDL_Window* displayWindow;

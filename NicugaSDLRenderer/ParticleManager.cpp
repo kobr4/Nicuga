@@ -27,7 +27,8 @@
 
 #include "ParticleManagager.h"
 #include "FastMath.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 
 void ParticleManager::addParticleRandom(float x, float y,unsigned int color)
 {

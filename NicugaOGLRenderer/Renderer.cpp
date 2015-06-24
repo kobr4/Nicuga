@@ -53,6 +53,8 @@ unsigned char g_texdata[]= { 255, 255, 255, 255, 255, 255, 255, 255,
 							255, 255, 255, 255, 255, 255, 255, 255};
 
 void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, float x, float y);
+void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, float x, float y);
+
 int thread_func(void *data);
 SDL_Surface* CreateSurface(Uint32 flags,int width,int height,const SDL_Surface* display);
 
@@ -152,7 +154,7 @@ void Renderer::init()
     }
 	*/
 	this->game->setOnDestroyCallback(onDestroyCallback,this);
-
+	this->game->setOnHitCallback(onHitCallback,this);
 
 	this->fbAccumulation = NULL;
 	this->fbDrawing = NULL;
@@ -187,6 +189,13 @@ void Renderer::init()
 	this->spriteDummy = new Sprite(texture,100.f,100.f,0,0,1,1);
 	this->spriteCovering = new Sprite(texture,640.f,480.f,0,0,1,1);
 	this->spriteRectangle = new Sprite(texture,10.f,1.f,0,0,1,1);
+
+
+	unsigned int * pixels2 = (unsigned int *)malloc(sizeof(unsigned int)*30*30);
+	TextureGenerator::generateCircle(0,0,pixels2,30,0xffffff00);
+	this->spriteCircle = new Sprite(new Texture(30,30,(unsigned char*)pixels2),10.f,10.f,1,1,0,0);
+	//this->spriteCircle = this->spriteBullet;
+
 	Texture * textSurfaceTexture = new Texture(640,480,(unsigned char*)this->textSurface->pixels);
 	this->spriteTextSurface = new Sprite(textSurfaceTexture,640.f,480.f,0,1,1,0);
 
@@ -392,7 +401,12 @@ void Renderer::drawHostileInstance(Shader * shader, HostileInstance * hostile)
 			orientation = (this->getFrameCount()%360 )* 2;
 			//printf("orientation=%d\n",orientation);
 		}
-		this->drawSprite(shader,renderable->sprite,x,y,orientation,color);
+
+		if (renderable->blink_hint-- > 0) {
+			//this->drawSprite(shader,renderable->sprite,x,y,orientation,0x00000000);
+		} else {
+			this->drawSprite(shader,renderable->sprite,x,y,orientation,color);
+		}
 	}
 	else this->drawSprite(shader,this->spriteDummy,x,y,0);
 }
@@ -445,7 +459,7 @@ void Renderer::drawShipBullets(Shader * shader)
 				OGLRenderable * renderable = (OGLRenderable *)(*bulletList)[i]->getRenderable();
 				switch (renderable->animationType) {
 				case 1 : 
-					this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,0, 0xff333333, 500,1000+i,this->spriteBullet);
+					this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,0, 0xff333333, 500,1000+i,this->spriteCircle);
 					break;
 				}
 				this->drawSprite(shader,renderable->sprite,(int)pos.getX(),(int)pos.getY(),0);
@@ -598,8 +612,11 @@ void Renderer::draw()
 
 	this->fbAccumulation->bind();
 	glClear(GL_COLOR_BUFFER_BIT); 
-	this->particleManager->drawParticles(this->shaderTexturing,this->spriteBullet,this);
 
+
+	//glDisable(GL_BLEND);
+	this->particleManager->drawParticles(this->shaderTexturing,this->spriteBullet,this);
+	//glEnable(GL_BLEND);
 	//
 	this->drawHostileBullets(this->shaderTexturing);
 	this->drawShipBullets(this->shaderTexturing);
@@ -627,7 +644,11 @@ void Renderer::draw()
 	memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
 	this->shaderTexturing->bind_attributes();
 
-	this->particleManager->drawParticles(this->shaderTexturing,this->spriteRectangle,this);
+	//glDisable(GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	this->particleManager->drawParticles(this->shaderTexturing,this->spriteCircle,this);
+	glBlendFunc(GL_ONE, GL_ONE);
+	//glEnable(GL_BLEND);
 
 	this->drawHostileBullets(this->shaderTexturing);
 	this->drawShipBullets(this->shaderTexturing);
@@ -1081,5 +1102,13 @@ void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, Hosti
 		unsigned int color = (a << 16) |  (a) << 8 | (a);
 		renderer->getParticleManager()->addParticleRandom(x,y,color,NULL);
 		
+	}
+}
+
+void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, float x, float y)
+{
+	if (hostile != NULL) {
+		OGLRenderable * renderable = (OGLRenderable*)hostile->getRenderable();
+		renderable->blink_hint = 10;
 	}
 }

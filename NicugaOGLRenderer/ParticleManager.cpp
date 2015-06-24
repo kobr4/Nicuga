@@ -264,7 +264,9 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 				//if (ydest > 20.f) {
 				//	printf("BUG ! head=%d i lf=%d head lf=%d f=%f\n",head, this->particles[i].currentLifeTime, this->particles[head].currentLifeTime,this->particles[head].y);
 				//}
-				renderingSprite->updateQuad(0,0,xdest,ydest,xdest+5.f,ydest+0.f,5.f,0.f);
+
+				// No sprite rescale
+				//renderingSprite->updateQuad(0,0,xdest,ydest,xdest+5.f,ydest+0.f,5.f,0.f);
 			}
 			float scale = 1.0f;
 			
@@ -279,7 +281,7 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 			//renderingSprite->draw();
 
 			if (head != -1) {
-				renderingSprite->updateQuad(0,0,5.f,5.f);
+				//renderingSprite->updateQuad(0,0,5.f,5.f);
 			}
 		}
 	}

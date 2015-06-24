@@ -19,12 +19,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,7 +68,7 @@ copy "$(EXPATPATH)\Bin\libexpat.dll" "$(SolutionDir)$(Configuration)\"</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(EXPATPATH)/Source/lib;$(SolutionDir)/Nicuga/;$(SDLPATH)\include;$(SolutionDir)/libBulletML</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programmation\SDL2_ttf-2.0.12\include;D:\Programmation\SDL2_mixer-2.0.0\include;$(EXPATPATH)/Source/lib;$(SolutionDir)/Nicuga/;$(SDLPATH)\include;$(SolutionDir)/libBulletML</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
