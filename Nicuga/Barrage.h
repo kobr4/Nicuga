@@ -49,10 +49,12 @@ public:
 	void setRenderable(IRenderable * renderable);
 	friend class BarrageInstance;
 	friend class HostileInstance;
+	void setOffsetPosition(int offsetx,int offsety);
 private:
 	IRenderable * renderable;
 	int damage;
 	tParsingData parsingData;
+	Vector2D offset_position;
 };
 
 struct cmp_str2

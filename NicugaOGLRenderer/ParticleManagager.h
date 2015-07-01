@@ -40,6 +40,8 @@ typedef struct
 	float speed_x;
 	float speed_y;
 	float mass;
+	float scale;
+	float scaleStep;
 	unsigned int direction;
 	unsigned int lifetime;
 	unsigned int currentLifeTime;
@@ -53,7 +55,7 @@ class ParticleManager
 {
 public :
 	void run(long dt);
-	void addParticle(float x, float y, float speed, unsigned int direction,unsigned int color,unsigned int lifetime,int trailId=-1,Sprite*sprite=NULL);
+	void addParticle(float x, float y, float speed, unsigned int direction,unsigned int color,unsigned int lifetime,int trailId=-1,Sprite*sprite=NULL,float scale=1.0f,float scaleStep=0.f);
 	void addParticleRandom(float x, float y,unsigned int color,Sprite * sprite);
 	void drawParticles(Shader * shader,Sprite * sprite, Renderer * renderer);
 	void addGravitySink(float x, float y,float mass,unsigned int lifetime);

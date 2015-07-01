@@ -84,6 +84,10 @@ Barrage * BarrageManager::getBarrage(const char * id)
 	return this->barrageMap[id];	
 }
 
+void Barrage::setOffsetPosition(int offsetx,int offsety) {
+	this->offset_position.set((float)offsetx,(float)offsety);
+}
+
 BarrageInstance * BarrageManager::getBarrageInstance(const char * id)
 {
 	BarrageInstance * barrageInstance = NULL;
@@ -287,7 +291,7 @@ Shoot* BarrageManager::getBulletInstance()
 
 Vector2D BarrageInstance::getPosition()
 {
-	return this->position;
+	return this->position + this->barrage->offset_position;
 }
 
 std::vector<Shoot*> * BarrageManager::getBulletList()

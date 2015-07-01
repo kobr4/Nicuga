@@ -58,8 +58,9 @@ typedef struct {
 class Renderer
 {
 public :
+	static int screenWidth;
+	static int screenHeight;
 	void init();
-
 	void loop();
 	void draw();
 	bool exitstate();
@@ -69,6 +70,14 @@ public :
 	void addEffect(T_EFFECT effect);
 	void drawSprite(Shader * shader, Sprite * sprite, float x, float y, int orientation,unsigned int color = 0xffffffff,float scale = 1.0f);
 	unsigned int getFrameCount() { return frameCounter; };
+
+	Sprite * spriteDummy;
+	Sprite * spriteBullet;
+	Sprite * spriteGrid;
+	Sprite * spriteCovering;
+	Sprite * spriteTextSurface;
+	Sprite * spriteRectangle;
+	Sprite * spriteCircle;
 private :
 	unsigned int frameCounter;
 	FrameBuffer * fbDrawing;
@@ -84,13 +93,7 @@ private :
 	Shader * shaderTexturing;
 	Shader * shaderDistort;
 	Sprite * spriteShip;
-	Sprite * spriteDummy;
-	Sprite * spriteBullet;
-	Sprite * spriteGrid;
-	Sprite * spriteCovering;
-	Sprite * spriteTextSurface;
-	Sprite * spriteRectangle;
-	Sprite * spriteCircle;
+
 
 	BackgroundManager backgroundManager;
 	SDL_Window* displayWindow;

@@ -18,6 +18,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDLtest01", "SDLtest01\SDLt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NicugaOGLRenderer", "NicugaOGLRenderer\NicugaOGLRenderer.vcxproj", "{3AB66E70-CE87-428A-8ABE-1F92CA0BF568}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureGenerator", "TextureGenerator\TextureGenerator.vcxproj", "{DC2FD908-5D59-4817-8B59-34DFB622B504}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -44,6 +46,10 @@ Global
 		{3AB66E70-CE87-428A-8ABE-1F92CA0BF568}.Debug|Win32.Build.0 = Debug|Win32
 		{3AB66E70-CE87-428A-8ABE-1F92CA0BF568}.Release|Win32.ActiveCfg = Release|Win32
 		{3AB66E70-CE87-428A-8ABE-1F92CA0BF568}.Release|Win32.Build.0 = Release|Win32
+		{DC2FD908-5D59-4817-8B59-34DFB622B504}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DC2FD908-5D59-4817-8B59-34DFB622B504}.Debug|Win32.Build.0 = Debug|Win32
+		{DC2FD908-5D59-4817-8B59-34DFB622B504}.Release|Win32.ActiveCfg = Release|Win32
+		{DC2FD908-5D59-4817-8B59-34DFB622B504}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -33,6 +33,7 @@ public:
 	Sprite * sprite;
 	int blink_hint;
 	int animationType;
+	int iparam1;
 	OGLRenderable(){
 		animationType = 0;
 	};

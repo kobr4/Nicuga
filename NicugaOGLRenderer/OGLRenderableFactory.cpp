@@ -15,6 +15,7 @@ enum tRenderableTag
 	DUALCIRCLE,
 	SQUARE,
 	IMAGE,
+	GENERATOR,
 	UNKNOWN
 };
 
@@ -30,6 +31,8 @@ tRenderableTag getRenderableTagType(const char * el)
 		return DUALCIRCLE;
 	if (!strcmp(el,"image"))
 		return IMAGE;
+	if (!strcmp(el,"generator"))
+		return GENERATOR;
 	return UNKNOWN;
 }
 
@@ -59,6 +62,8 @@ void sdlrenderable_xmlstart(void *data, const char *el, const char **attr)
 	int width = 0;
 	int innerwidth = 0;
 	int height = 0;
+	int iparam = 0;
+	int iteration;
 	unsigned int animationType = 0;
 	unsigned int color;
 	unsigned int color2;
@@ -78,9 +83,14 @@ void sdlrenderable_xmlstart(void *data, const char *el, const char **attr)
 		sscanf(parameter,"%x",&color);
 		parameter = getAttribute("color2",attr,iAttrCount);
 		sscanf(parameter,"%x",&color2);
+		parameter = getAttribute("iparam1",attr,iAttrCount);
+		if (parameter != NULL) {
+			iparam = atoi(parameter);
+		}
 		pixels = (unsigned int *)malloc(sizeof(unsigned int) * (width) * (width));
 		TextureGenerator::generateDualRectangle(pixels,width,width,color,color2);
 		currentRenderable->animationType = animationType;
+		currentRenderable->iparam1 = iparam;
 		currentRenderable->sprite = new Sprite(new Texture(width,width,(unsigned char*)pixels),width,width,0,0,1,1);
 		break;
 	case CIRCLE :
@@ -117,6 +127,17 @@ void sdlrenderable_xmlstart(void *data, const char *el, const char **attr)
 		TextureGenerator::generateDualCircle(pixels,width,innerwidth,color,color2);
 		currentRenderable->animationType = animationType;
 		currentRenderable->sprite = new Sprite(new Texture(width,width,(unsigned char*)pixels),width,width,0,0,1,1);
+		break;
+	case GENERATOR :
+		parameter = getAttribute("width",attr,iAttrCount);
+		width = atoi(parameter);
+		parameter = getAttribute("height",attr,iAttrCount);
+		height = atoi(parameter);
+		parameter = getAttribute("iteration",attr,iAttrCount);
+		iteration = atoi(parameter);
+		pixels = (unsigned int *)malloc(sizeof(unsigned int) * width * height);
+		TextureGenerator::generateShape(pixels,width,height,0,iteration);
+		currentRenderable->sprite = new Sprite(new Texture(width,height,(unsigned char*)pixels),width,height,0,0,1,1);
 		break;
 	}
 }

@@ -59,9 +59,9 @@ ParticleManager::ParticleManager() {
 
 void ParticleManager::addParticleRandom(float x, float y,unsigned int color, Sprite * sprite)
 {
-	float speed = (float)(rand()%10) / 10.f + 0.1f;
+	float speed = (float)(rand()%10) / 40.f + 0.1f;
 	unsigned int direction = rand()%360;
-	unsigned lifetime = rand()%2000;
+	unsigned lifetime = rand()%500;
 
 	this->addParticle(x, y, speed,direction, color,lifetime,-1, sprite);
 }
@@ -117,7 +117,7 @@ void ParticleManager::deactivateTrail(int trailId) {
 	}
 }
 
-void ParticleManager::addParticle(float x, float y, float speed,unsigned int direction,unsigned int color,unsigned int lifetime,int trailId, Sprite*sprite)
+void ParticleManager::addParticle(float x, float y, float speed,unsigned int direction,unsigned int color,unsigned int lifetime,int trailId, Sprite*sprite,float scale,float scaleStep)
 {
 	for (int i = 0;i < 1000;i++)
 	{
@@ -137,8 +137,8 @@ void ParticleManager::addParticle(float x, float y, float speed,unsigned int dir
 			this->particles[i].speed_y = this->particles[i].speed * FastMath::fastSin(this->particles[i].direction);
 			this->particles[i].trailId = trailId;
 			this->particles[i].sprite = sprite;
-
-			//printf("PARTICLE ADDED TRAILID=%d\n",trailId);
+			this->particles[i].scale = scale;
+			this->particles[i].scaleStep = scaleStep;
 			return;
 		}
 	}
@@ -196,6 +196,7 @@ void ParticleManager::run(long dt)
 
 
 			//printf("PARTICLE MOVE %d %d %d %d\n",(int)this->particles[i].x,(int)this->particles[i].y,this->particles[i].currentLifeTime,this->particles[i].direction);
+			this->particles[i].scale += this->particles[i].scaleStep;
 		}
 	}
 }
@@ -277,7 +278,7 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 			}
 			*/
 			int direction = this->particles[i].direction;
-			renderer->drawSprite(shader,renderingSprite,this->particles[i].x-3,this->particles[i].y-3,direction,this->particles[i].color,scale);
+			renderer->drawSprite(shader,renderingSprite,this->particles[i].x-3,this->particles[i].y-3,direction,this->particles[i].color,this->particles[i].scale);
 			//renderingSprite->draw();
 
 			if (head != -1) {

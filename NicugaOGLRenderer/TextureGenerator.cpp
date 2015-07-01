@@ -28,6 +28,7 @@
 #include "Vector2D.h"
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 void TextureGenerator::overdraw(unsigned int * pixels, int w,int h, unsigned int * srcpixels, int wsource, int hsource) {
 	int wstart = (w - wsource) / 2;
@@ -294,4 +295,199 @@ void TextureGenerator::generateDualTriangle(int overdraw,int blurFactor,unsigned
 }
 
 void TextureGenerator::generateDualRectangle(int overdraw,int blurFactor,unsigned int * pixels,int w,int h, unsigned int color,unsigned int color2) {
+}
+
+
+typedef struct {
+	Vector2D p1;
+	Vector2D p2;
+	Vector2D p3;
+} T_T; 
+
+typedef struct {
+	Vector2D p1;
+	Vector2D p2;
+	Vector2D normal;
+} T_AXIS;
+
+
+Vector2D maxInbound(Vector2D p1, Vector2D p2, int w, int h,float step) {
+	bool inbound = true;
+	Vector2D p;
+	Vector2D res = Vector2D(0.0,0.0);
+	float current = 0;
+	while (inbound) {
+		current += step;
+		p = p1 + (p2 - p1) * current;
+		if ((p.getX() < 0.0)||(p.getY() < 0.0)||(p.getX() > (float)w)||(p.getY() > (float)h)) {
+			inbound = false;
+		}
+
+		if (inbound) {
+			res = p;
+		}
+	}
+
+	return res;
+}
+
+Vector2D getAxisNormal(Vector2D p1, Vector2D p2, Vector2D p3) {
+	Vector2D p2p1 = p2 - p1;
+	Vector2D p3p1 = p3 - p1;
+	Vector2D p3p1n = p3p1;
+	p3p1n.normalize();
+	Vector2D k = p1 + p3p1n * (p2p1.dot(p3p1) / p3p1.distance(0,0));
+	Vector2D n = p2 - k;
+	n.normalize();
+	return n;
+}
+
+int max(int a,int b) {
+	int m;
+	(a > b) ? m = a : m = b;
+	return m;
+}
+
+int min(int a,int b) {
+	int m;
+	(a < b) ? m = a : m = b;
+	return m;
+}
+
+void rasterTriangle(unsigned int * pixels,int w,int h, unsigned int color, T_T * tri) {
+	//printf("Raster triangle [%f %f][%f %f][%f %f]\n",tri->p1.getX(),tri->p1.getY(),tri->p2.getX(),tri->p2.getY(),tri->p3.getX(),tri->p3.getY());
+
+	/* get the bounding box of the triangle */
+	int maxX = max(tri->p1.getX(), max(tri->p2.getX(), tri->p3.getX()));
+	int minX = min(tri->p1.getX(), min(tri->p2.getX(), tri->p3.getX()));
+	int maxY = max(tri->p1.getY(), max(tri->p2.getY(), tri->p3.getY()));
+	int minY = min(tri->p1.getY(), min(tri->p2.getY(), tri->p3.getY()));
+	//printf("minX=%d maxX=%d minY=%d maxY=%d\n",minX,maxX,minY,maxY);
+
+	/* spanning vectors of edge (v1,v2) and (v1,v3) */
+	Vector2D vs1 = Vector2D(tri->p2.getX() - tri->p1.getX(), tri->p2.getY() - tri->p1.getY());
+	Vector2D vs2 = Vector2D(tri->p3.getX() - tri->p1.getX(), tri->p3.getY() - tri->p1.getY());
+
+	for (int x = minX; x <= maxX; x++)
+	{
+	  for (int y = minY; y <= maxY; y++)
+	  {
+		Vector2D q = Vector2D(x - tri->p1.getX(), y - tri->p1.getY());
+
+		float s = (float)q.cross(vs2) / vs1.cross(vs2);
+		float t = (float)vs1.cross(q) / vs1.cross(vs2);
+
+		if ( (s >= 0) && (t >= 0) && (s + t <= 1))
+		{ /* inside triangle */
+		  pixels[x + y * w] = color;
+		}
+	  }
+	}
+}
+
+
+
+int addTriangle(T_AXIS * axis, std::vector<T_AXIS> * axisList, std::vector<T_T> * triList,int w,int h) {
+	T_T newT;
+	T_AXIS newA;
+	int retryCounter = 0; 
+	float ratio = (float)(rand()%90 + 10) / 100.f;
+
+	//printf("R1 = %f\n",ratio);
+	newT.p1 = axis->p1 + (axis->p2 - axis->p1) * ratio ;
+	//printf("P1 : [%f %f]",newT.p1.getX(),newT.p1.getY());
+
+	int sign = (rand()%100)&1==1 ? 0 : 1;
+	Vector2D max1 = maxInbound(newT.p1,axis->p1,w,h,0.1);
+	Vector2D max2 = maxInbound(newT.p1,axis->p2,w,h,0.1);
+	Vector2D max = sign == 0 ? max1 : max2;
+	ratio = (float)(rand()%90 + 10) / 100.f;
+
+	//printf("R2 = %f\n",ratio);
+	newT.p2 = newT.p1 + (max - newT.p1) * ratio ;
+
+
+	float length = rand()%10 + 10.0f;
+	bool done = false;
+	
+	while (done == false) {
+		ratio = (float)(rand()%90 + 10) / 100.f;
+		Vector2D pT =  newT.p1 + (newT.p2 - newT.p1) * ratio ;
+		newT.p3 = pT + axis->normal * length;
+		if ((newT.p3.getX() > 0.0)&&(newT.p3.getY() > 0.0)&&(newT.p3.getX() < (float)w)&&(newT.p3.getY() < (float)h)) {
+			done = true;
+		} else {
+			//printf("P3 not inbound retry. [%f %f]",newT.p3.getX(),newT.p3.getY());
+			retryCounter++;
+			if (retryCounter > 100) {
+				return -1;
+			}
+		}
+	}
+
+	printf("Adding triangle [%f %f][%f %f][%f %f]\n",newT.p1.getX(),newT.p1.getY(),newT.p2.getX(),newT.p2.getY(),newT.p3.getX(),newT.p3.getY());
+	newA.p1 = newT.p1;
+	newA.p2 = newT.p3;
+	newA.normal = getAxisNormal(newT.p1,newT.p2,newT.p3) * -1;
+	//printf("Adding axis [%f %f][%f %f][%f %f]\n",newA.p1.getX(),newA.p1.getY(),newA.p2.getX(),newA.p2.getY(),newA.normal.getX(),newA.normal.getY());
+	axisList->push_back(newA);
+	
+
+	newA.p1 = newT.p2;
+	newA.p2 = newT.p3;
+	newA.normal = getAxisNormal(newT.p2,newT.p1,newT.p3) * -1;
+	//printf("Adding axis [%f %f][%f %f][%f %f]\n",newA.p1.getX(),newA.p1.getY(),newA.p2.getX(),newA.p2.getY(),newA.normal.getX(),newA.normal.getY());
+	axisList->push_back(newA);
+
+	newA.p1 = newT.p1;
+	newA.p2 = newT.p2;
+	newA.normal = getAxisNormal(newT.p1,newT.p3,newT.p2) * -1;
+	//printf("Adding axis [%f %f][%f %f][%f %f]\n",newA.p1.getX(),newA.p1.getY(),newA.p2.getX(),newA.p2.getY(),newA.normal.getX(),newA.normal.getY());
+	axisList->push_back(newA);
+
+	triList->push_back(newT);
+
+	return 0;
+}
+
+void hsymetrize(unsigned int * pixels,int w,int h) {
+	for (int i = w/2;i < w;i++)
+		for(int j = 0;j < h;j++) 	
+		{
+			pixels[i + j * w] = pixels[w-i + j * w];
+		}
+}
+
+
+void TextureGenerator::generateShape(unsigned int * pixels,int w,int h, unsigned int color,unsigned int iteration) {
+	for (int i = 0;i < w;i++)
+		for(int j = 0;j < h;j++) 	
+		{
+			pixels[i + j * w] = 0;
+		}	
+	
+	std::vector<T_T> triList;
+	std::vector<T_AXIS> axisList;
+	T_AXIS iniAxis;
+	int gw = w/2; 
+	iniAxis.p1 = Vector2D(gw,0);
+	iniAxis.p2 = Vector2D(gw,h-1);
+	iniAxis.normal = Vector2D(-1,0);
+	axisList.push_back(iniAxis);
+	
+	for (int i = 0;i < iteration;i++) {
+		T_AXIS axis = axisList[rand()%axisList.size()];
+		addTriangle(&axis,&axisList,&triList,gw,h);
+	}
+
+	for (int i = 0;i < triList.size();i++) {
+		unsigned int c = rand()%50*4+56 << 16;
+		unsigned int r = 0x1f;
+		unsigned int g = 0x1f << 8;
+		unsigned int b = 0x1f << 16;
+		
+		rasterTriangle(pixels,gw,h, 0xff000000 | c | r | g | b, &(triList[i]));
+	}
+
+	hsymetrize(pixels,w,h);
 }

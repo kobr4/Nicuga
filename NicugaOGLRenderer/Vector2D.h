@@ -22,7 +22,7 @@
 * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAG.E
 */
 
 #pragma once
@@ -37,5 +37,11 @@ public:
 	float getX();
 	float getY();
 	float distance(float x, float y);
+	void normalize();
+	float dot(Vector2D vec);
+	float cross(Vector2D vec);
+	Vector2D operator+(Vector2D arg);
+	Vector2D operator-(Vector2D arg);
+	Vector2D operator*(float arg);
 };
 

@@ -200,11 +200,13 @@ void level_start(void *data, const char *el, const char **attr) {
 	const char * id;
 	const char * file;
 	const char * damagestr;
+	const char * offsetposition;
 	int topx = 0;
 	int topy = 0;
 	int bottomx = 0;
 	int bottomy = 0;
 	int damage = 0;
+	Barrage * barrage;
 	switch (getTagType(el))
 	{
 	case HOSTILE :
@@ -220,11 +222,17 @@ void level_start(void *data, const char *el, const char **attr) {
 	case BARRAGE :
 		id = getAttribute("id",attr,iAttrCount);
 		file = getAttribute("file",attr,iAttrCount);
+		offsetposition = getAttribute("offsetposition",attr,iAttrCount);
 		damagestr = getAttribute("damage",attr,iAttrCount);
 		if (damagestr != NULL)
 			damage = atoi(damagestr);
-		level->getBarrageManager()->addBarrage(id,file,damage);
-		level->getFriendlyBarrageManager()->addBarrage(id,file,damage);
+		if (offsetposition != NULL) {
+			sscanf(offsetposition,"%d,%d",&topx,&topy);
+		}
+		barrage = level->getBarrageManager()->addBarrage(id,file,damage);
+		barrage->setOffsetPosition(topx,topy);
+		barrage = level->getFriendlyBarrageManager()->addBarrage(id,file,damage);
+		barrage->setOffsetPosition(topx,topy);
 		strcpy(currentBarrageId,id);
 
 		

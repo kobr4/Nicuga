@@ -65,3 +65,7 @@ float Vector2D::distance(float x, float y)
 {
 	return sqrt((v[0] - x) * (v[0] - x) + (v[1] - y) * (v[1] - y));
 }
+
+Vector2D Vector2D::operator+(Vector2D arg) {
+	return Vector2D(this->getX()+arg.getX(),this->getY()+arg.getY());
+}

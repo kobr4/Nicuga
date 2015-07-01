@@ -37,5 +37,6 @@ public:
 	float getX();
 	float getY();
 	float distance(float x, float y);
+	Vector2D operator+(Vector2D arg);
 };
 

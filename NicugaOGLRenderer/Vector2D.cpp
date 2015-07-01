@@ -65,3 +65,30 @@ float Vector2D::distance(float x, float y)
 {
 	return sqrt((v[0] - x) * (v[0] - x) + (v[1] - y) * (v[1] - y));
 }
+
+float Vector2D::dot(Vector2D vec) {
+	return v[0] * vec.getX() + v[1] * vec.getY();
+}
+
+float Vector2D::cross(Vector2D vec) {
+	return v[0] * vec.getY() - v[1] * vec.getX();
+}
+
+void Vector2D::normalize() {
+	float d = this->distance(0.f,0.f);
+	v[0] = v[0] / d;
+	v[1] = v[1] / d;
+}
+
+Vector2D Vector2D::operator+(Vector2D arg) {
+	return Vector2D(this->getX()+arg.getX(),this->getY()+arg.getY());
+}
+
+Vector2D Vector2D::operator-(Vector2D arg) {
+	return Vector2D(this->getX()-arg.getX(),this->getY()-arg.getY());
+}
+
+Vector2D Vector2D::operator*(float arg) {
+	return Vector2D(this->getX() * arg,this->getY() * arg);
+}
+

@@ -44,6 +44,8 @@ public :
 	static void generateDualTriangle(int overdraw,int blurFactor,unsigned int * pixels,int w, int innerw, unsigned int color,unsigned int color2);
 	static void generateDualRectangle(int overdraw,int blurFactor,unsigned int * pixels,int w,int h, unsigned int color,unsigned int color2);
 
+	static void generateShape(unsigned int * pixels,int w,int h, unsigned int color,unsigned int iteration);
+
 	static void blurTexture(unsigned int * pixels,int w,int h, int blurFactor);
 	static void overdraw(unsigned int * pixels, int w,int h, unsigned int * srcpixels, int wsource, int hsource);
 };

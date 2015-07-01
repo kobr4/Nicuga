@@ -58,6 +58,10 @@ void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileIn
 int thread_func(void *data);
 SDL_Surface* CreateSurface(Uint32 flags,int width,int height,const SDL_Surface* display);
 
+
+int Renderer::screenHeight = 640;
+int Renderer::screenWidth = 480;
+
 void Renderer::init()
 {
 	for (int i = 0;i < 10;i++) {
@@ -85,7 +89,7 @@ void Renderer::init()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 
-    displayWindow = SDL_CreateWindow("Test SDL 2.0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL);
+    displayWindow = SDL_CreateWindow("Test SDL 2.0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Renderer::screenWidth, Renderer::screenHeight, SDL_WINDOW_OPENGL);
     
     // Création du contexte OpenGL
   
@@ -126,7 +130,7 @@ void Renderer::init()
     unsigned int bmask = 0x00ff0000;
     unsigned int amask = 0xff000000;
 #endif
-	this->textSurface = SDL_CreateRGBSurface( 0, 640, 480, 32, rmask, gmask, bmask, amask);
+	this->textSurface = SDL_CreateRGBSurface( 0, Renderer::screenWidth, Renderer::screenHeight, 32, rmask, gmask, bmask, amask);
 
 	OGLRenderableFactory factory = OGLRenderableFactory();
 
@@ -187,36 +191,36 @@ void Renderer::init()
 	this->spriteBullet = new Sprite(texture,5.f,5.f,1,1,0,0);
 	this->spriteDrawing = new Sprite(texture,100.f,100.f,0,0,1,1);
 	this->spriteDummy = new Sprite(texture,100.f,100.f,0,0,1,1);
-	this->spriteCovering = new Sprite(texture,640.f,480.f,0,0,1,1);
+	this->spriteCovering = new Sprite(texture,Renderer::screenWidth,Renderer::screenHeight,0,0,1,1);
 	this->spriteRectangle = new Sprite(texture,10.f,1.f,0,0,1,1);
 
 
 	unsigned int * pixels2 = (unsigned int *)malloc(sizeof(unsigned int)*30*30);
-	TextureGenerator::generateCircle(0,0,pixels2,30,0xffffff00);
+	TextureGenerator::generateCircle(0,0,pixels2,30,0xffffffff);
 	this->spriteCircle = new Sprite(new Texture(30,30,(unsigned char*)pixels2),10.f,10.f,1,1,0,0);
 	//this->spriteCircle = this->spriteBullet;
 
-	Texture * textSurfaceTexture = new Texture(640,480,(unsigned char*)this->textSurface->pixels);
-	this->spriteTextSurface = new Sprite(textSurfaceTexture,640.f,480.f,0,1,1,0);
+	Texture * textSurfaceTexture = new Texture(Renderer::screenWidth,Renderer::screenHeight,(unsigned char*)this->textSurface->pixels);
+	this->spriteTextSurface = new Sprite(textSurfaceTexture,Renderer::screenWidth,Renderer::screenHeight,0,1,1,0);
 
 	this->spriteShip = new Sprite(new Texture(30,30,(unsigned char*)pixels),30.f,30.f,1,1,0,0);
 
 	unsigned int * pixelsgrid = (unsigned int*)malloc(sizeof(unsigned int)* 100 * 100);
 	TextureGenerator::generateGrid(pixelsgrid,100,100,20,0xff0909aa);
 	this->spriteGrid = new Sprite(new Texture(100,100,(unsigned char*)pixelsgrid),100.f,100.f,0,0,1,1);
-	BackgroundLayer * backgroundLayer = new BackgroundLayer(640,480);
+	BackgroundLayer * backgroundLayer = new BackgroundLayer(Renderer::screenWidth,Renderer::screenHeight);
 	backgroundLayer->addElement(this->spriteGrid,100,100);
 	this->backgroundManager.addLayer(backgroundLayer);
 	
 	unsigned int * pixelsStarfield = (unsigned int*)calloc(sizeof(unsigned int), 100 * 100);
 	TextureGenerator::generateStarfield(pixelsStarfield,100,100,10);
-	backgroundLayer = new BackgroundLayer(640,480,0.0,-1.5f);
+	backgroundLayer = new BackgroundLayer(Renderer::screenWidth,Renderer::screenHeight,0.0,-1.5f);
 	backgroundLayer->addElement(new Sprite(new Texture(100,100,(unsigned char*)pixelsStarfield),100.f,100.f,0,0,1,1),100,100);
 	this->backgroundManager.addLayer(backgroundLayer);
 
 	unsigned int * pixelsStarfield2 = (unsigned int*)calloc(sizeof(unsigned int), 100 * 100);
 	TextureGenerator::generateStarfield(pixelsStarfield2,100,100,10);
-	backgroundLayer = new BackgroundLayer(640,480,0.0,-1.0f);
+	backgroundLayer = new BackgroundLayer(Renderer::screenWidth,Renderer::screenHeight,0.0,-1.0f);
 	backgroundLayer->addElement(new Sprite(new Texture(100,100,(unsigned char*)pixelsStarfield2),100.f,100.f,0,0,1,1),100,100);
 	this->backgroundManager.addLayer(backgroundLayer);
 	
@@ -458,8 +462,9 @@ void Renderer::drawShipBullets(Shader * shader)
 			{
 				OGLRenderable * renderable = (OGLRenderable *)(*bulletList)[i]->getRenderable();
 				switch (renderable->animationType) {
+				//trail
 				case 1 : 
-					this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,0, 0xff333333, 500,1000+i,this->spriteCircle);
+					this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,0, 0xffaa3333, renderable->iparam1,1000+i,this->spriteCircle,1.0f,-0.04f);
 					break;
 				}
 				this->drawSprite(shader,renderable->sprite,(int)pos.getX(),(int)pos.getY(),0);
@@ -520,28 +525,28 @@ void Renderer::blur_framebuffer() {
 	this->shaderTexturing->bind();
 	this->spriteAccumulation->draw();
 	this->shaderTexturing->unbind();
-	this->fbHalfRes1->unbind(640,480);
+	this->fbHalfRes1->unbind(Renderer::screenWidth,Renderer::screenHeight);
 	
 	this->fbHalfRes2->bind();
 	memcpy(this->shaderGaussianBlurHorizontal->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
 	this->shaderGaussianBlurHorizontal->bind();
 	this->spriteHalfRes1->draw();
 	this->shaderGaussianBlurHorizontal->unbind();
-	this->fbHalfRes2->unbind(640,480);
+	this->fbHalfRes2->unbind(Renderer::screenWidth,Renderer::screenHeight);
 	
 	this->fbHalfRes1->bind();
 	memcpy(this->shaderGaussianBlurVertical->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
 	this->shaderGaussianBlurVertical->bind();
 	this->spriteHalfRes2->draw();
 	this->shaderGaussianBlurVertical->unbind();
-	this->fbHalfRes1->unbind(640,480);
+	this->fbHalfRes1->unbind(Renderer::screenWidth,Renderer::screenHeight);
 	
 	this->fbAccumulation->bind();
 	memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
 	this->shaderTexturing->bind();
 	this->spriteHalfRes1->draw();
 	this->shaderTexturing->unbind();
-	this->fbAccumulation->unbind(640,480);
+	this->fbAccumulation->unbind(Renderer::screenWidth,Renderer::screenHeight);
 
 	this->shaderTexturing->bind();
 }
@@ -554,27 +559,27 @@ void Renderer::draw()
 	SDL_FillRect(this->textSurface, NULL, 0x000000);
 
 	if (this->fbDrawing == NULL){ 
-		this->fbDrawing = new FrameBuffer(640,480);
+		this->fbDrawing = new FrameBuffer(Renderer::screenWidth,Renderer::screenHeight);
 		this->fbDrawing->do_register();
-		this->spriteDrawing = new Sprite(this->fbDrawing->getTexture(),640.,480.,0,0,1,1);		
+		this->spriteDrawing = new Sprite(this->fbDrawing->getTexture(),Renderer::screenWidth,Renderer::screenHeight,0,0,1,1);		
 	}
 	
 	if (this->fbAccumulation == NULL) {
-		this->fbAccumulation= new FrameBuffer(640,480);
+		this->fbAccumulation= new FrameBuffer(Renderer::screenWidth,Renderer::screenHeight);
 		this->fbAccumulation->do_register();
-		this->spriteAccumulation = new Sprite(this->fbAccumulation->getTexture(),640.,480.,0,0,1,1);
+		this->spriteAccumulation = new Sprite(this->fbAccumulation->getTexture(),Renderer::screenWidth,Renderer::screenHeight,0,0,1,1);
 	}
 	
 	if (this->fbHalfRes1 == NULL) {
-		this->fbHalfRes1= new FrameBuffer(320,240);
+		this->fbHalfRes1= new FrameBuffer(Renderer::screenWidth/2,Renderer::screenHeight/2);
 		this->fbHalfRes1->do_register();
-		this->spriteHalfRes1 = new Sprite(this->fbHalfRes1->getTexture(),640.,480.,0,0,1,1);
+		this->spriteHalfRes1 = new Sprite(this->fbHalfRes1->getTexture(),Renderer::screenWidth,Renderer::screenHeight,0,0,1,1);
 	}
 
 	if (this->fbHalfRes2 == NULL) {
-		this->fbHalfRes2= new FrameBuffer(320, 240);
+		this->fbHalfRes2= new FrameBuffer(Renderer::screenWidth/2,Renderer::screenHeight/2);
 		this->fbHalfRes2->do_register();
-		this->spriteHalfRes2 = new Sprite(this->fbHalfRes2->getTexture(),640.,480.,0,0,1,1);
+		this->spriteHalfRes2 = new Sprite(this->fbHalfRes2->getTexture(),Renderer::screenWidth,Renderer::screenHeight,0,0,1,1);
 	}
 
 	//OpenGL setup
@@ -584,11 +589,11 @@ void Renderer::draw()
 	GLfloat matrix[16];
 	glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
 
-	int screenHeight = 480;
+	//int screenHeight = 480;
 	glViewport((GLint) (matrix[12]),
 				(GLint) (-matrix[13]),
-				(GLsizei) 640,
-				(GLsizei) 480);
+				(GLsizei) Renderer::screenWidth,
+				(GLsizei) Renderer::screenHeight);
 	/*
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -599,7 +604,7 @@ void Renderer::draw()
 	//
 	glDisable(GL_DEPTH_TEST);
 
-	glm::mat4 projMat = glm::ortho( 0.f, 640.f, 480.f, 0.f, -1.f, 1.f );
+	glm::mat4 projMat = glm::ortho( 0.f, (float)Renderer::screenWidth,(float)Renderer::screenHeight, 0.f, -1.f, 1.f );
 	memcpy(this->shaderGaussianBlurHorizontal->getProjectionMatrix(), glm::value_ptr(projMat),sizeof(float)*16);
 	memcpy(this->shaderGaussianBlurVertical->getProjectionMatrix(), glm::value_ptr(projMat),sizeof(float)*16);
 	memcpy(this->shaderDistort->getProjectionMatrix(), glm::value_ptr(projMat),sizeof(float)*16);
@@ -625,7 +630,7 @@ void Renderer::draw()
 		this->drawShip(this->shaderTexturing,this->game->getCurrentLevel()->getShip());
 	this->drawHostiles(this->shaderTexturing);
 	//
-	this->fbAccumulation->unbind(640,480);
+	this->fbAccumulation->unbind(Renderer::screenWidth,Renderer::screenHeight);
 
 	
 	glDisable(GL_BLEND);
@@ -707,7 +712,7 @@ void Renderer::draw()
 	//}
 
 
-	this->fbDrawing->unbind(640,480);
+	this->fbDrawing->unbind(Renderer::screenWidth,Renderer::screenHeight);
 	glDisable(GL_BLEND);	
 
 
@@ -834,7 +839,7 @@ void Renderer::loop()
 							break;
 						case SDLK_8 :
 							for (int i = 0;i < 10;i++) {
-								this->getParticleManager()->addParticle(rand()%640,rand()%480,0.2,rand()%360,0xffffffff,10000,-1);
+								this->getParticleManager()->addParticle(rand()%Renderer::screenWidth,rand()%Renderer::screenHeight,0.2,rand()%360,0xffffffff,10000,-1);
 							}
 							break;
 						case SDLK_9 :
@@ -944,7 +949,7 @@ void Renderer::processEffect(T_EFFECT &effect) {
 			 break;
 	case 3 : {
 			glDisable(GL_BLEND);
-			this->fbDrawing->unbind(640,480);
+			this->fbDrawing->unbind(Renderer::screenWidth,Renderer::screenHeight);
 			this->fbAccumulation->bind();
 			glm::mat4 matrix = glm::mat4();
 			matrix = glm::translate(matrix,glm::vec3(0.0f, FastMath::fastCos(360/30*effect.duration)*10.f, 0.0f));
@@ -953,7 +958,7 @@ void Renderer::processEffect(T_EFFECT &effect) {
 			this->shaderTexturing->bind_attributes();
 			this->spriteDrawing->draw();
 			//this->shaderDistort->unbind();
-			this->fbAccumulation->unbind(640,480);
+			this->fbAccumulation->unbind(Renderer::screenWidth,Renderer::screenHeight);
 			this->fbDrawing->bind();
 			this->shaderTexturing->bind();
 			memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
@@ -966,7 +971,7 @@ void Renderer::processEffect(T_EFFECT &effect) {
 	case 2  :
 			//glDisable(GL_DEPTH_TEST);
 			glDisable(GL_BLEND);
-			this->fbDrawing->unbind(640,480);
+			this->fbDrawing->unbind(Renderer::screenWidth,Renderer::screenHeight);
 			this->fbAccumulation->bind();
 
 			this->shaderDistort->bind();
@@ -981,12 +986,12 @@ void Renderer::processEffect(T_EFFECT &effect) {
 
 
 			if (effect.duration == 29) {
-				float x = (float)(rand()%640);
-				float y = (float)(rand()%480);
+				float x = (float)(rand()%Renderer::screenWidth);
+				float y = (float)(rand()%Renderer::screenHeight);
 				this->getParticleManager()->addParticle(x,y,0.0,rand()%360,rand(),100000,-1);
 				this->getParticleManager()->addGravitySink(x,y,0.01f,5000);
-				v[1] = x / 640.f;
-				v[2] = y / 480.f;
+				v[1] = x / (float)Renderer::screenWidth;
+				v[2] = y / (float)Renderer::screenHeight;
 				v[0] = 41.f + (float)effect.duration ;
 			}
 
@@ -1005,7 +1010,7 @@ void Renderer::processEffect(T_EFFECT &effect) {
 			this->spriteDrawing->draw();
 			//this->spriteCovering->draw();
 			this->shaderDistort->unbind();
-			this->fbAccumulation->unbind(640,480);
+			this->fbAccumulation->unbind(Renderer::screenWidth,Renderer::screenHeight);
 			this->fbDrawing->bind();
 			
 			this->shaderTexturing->bind();
@@ -1083,7 +1088,7 @@ void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, Hosti
 		if (hostile->getScore() > 1000){
 			effect.duration = 30;
 			effect.effectType = 1;
-			renderer->addEffect(effect);
+			renderer->addEffect(effect;)w
 		}
 		*/
 	}
@@ -1094,13 +1099,14 @@ void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, Hosti
 		renderer->getParticleManager()->deactivateTrail(bulletId);
 	}
 
-	for (int i = 0;i < 50;i++)
+	for (int i = 0;i < 10;i++)
 	{
 		//unsigned int color = (rand()%200 << 16) |  (rand()%200) << 8 | (rand()%200);
 
 		unsigned int a = rand()%100+100;
 		unsigned int color = (a << 16) |  (a) << 8 | (a);
-		renderer->getParticleManager()->addParticleRandom(x,y,color,NULL);
+		//unsigned int color = 0xffff00000;
+		renderer->getParticleManager()->addParticleRandom(x,y,color,renderer->spriteBullet);
 		
 	}
 }
