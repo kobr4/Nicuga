@@ -30,12 +30,15 @@
 #include <string.h>
 #include "Level.h"
 #include "Barrage.h"
+#include "RenderableAbstractFactory.h"
 
 static Ship * currentShip;
 static XML_Parser currentParer;
 static XML_StartElementHandler oldStart;
 static XML_EndElementHandler oldEnd;
 static void * oldUserData;
+static RenderableAbstractFactory * g_renderableFactory;
+void ship_xmlend(void *data, const char *el);
 
 void ship_xmlstart(void *data, const char *el, const char **attr) 
 {
@@ -65,6 +68,10 @@ void ship_xmlstart(void *data, const char *el, const char **attr)
 		
 		currentShip->setBoundingBox(BoundingBox((float)topx,(float)topy,(float)bottomx,(float)bottomy));
 		break;
+	case RENDERABLE:
+		g_renderableFactory->setFactoryCallbacks(currentParer, ship_xmlstart, ship_xmlend);
+		currentShip->setRenderable(g_renderableFactory->getRenderable());
+		break;
 	case BARRAGE :
 		Level * level = (Level*)oldUserData;
 		id = getAttribute("id",attr,iAttrCount);
@@ -83,6 +90,7 @@ void ship_xmlstart(void *data, const char *el, const char **attr)
 			exit(0);
 		}
 		break;
+
 	}
 }
 
@@ -98,10 +106,12 @@ void ship_xmlend(void *data, const char *el)
 	}
 }
 
-void ShipFactory::setFactoryCallbacks(XML_Parser p, XML_StartElementHandler start, XML_EndElementHandler end)
+void ShipFactory::setFactoryCallbacks(XML_Parser p, XML_StartElementHandler start, XML_EndElementHandler end, RenderableAbstractFactory * renderableFactory)
 {
 	currentShip = new Ship();
 	currentShip->setInvicibleTimer(0);
+
+	g_renderableFactory = renderableFactory;
 
 	oldStart = start;
 	oldEnd = end;

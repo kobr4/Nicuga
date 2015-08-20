@@ -41,13 +41,13 @@ public :
 	}
 
 	void update(int dt) {
-		for(int i = 0;i < listLayer.size();i++) {
+		for(unsigned int i = 0;i < listLayer.size();i++) {
 			listLayer[i]->update(dt);
 		}
 	}
 
 	void draw(Shader * shader) {
-		for(int i = 0;i < listLayer.size();i++) {
+		for(unsigned int i = 0;i < listLayer.size();i++) {
 			listLayer[i]->draw(shader);
 		}
 	}

@@ -1,6 +1,7 @@
 #include "OGLRenderableFactory.h"
 #include "TextureGenerator.h"
 #include "Texture.h"
+#include "SDL_image.h"
 
 static OGLRenderable * currentRenderable;
 static XML_Parser currentParer;
@@ -139,6 +140,33 @@ void sdlrenderable_xmlstart(void *data, const char *el, const char **attr)
 		TextureGenerator::generateShape(pixels,width,height,0,iteration);
 		currentRenderable->sprite = new Sprite(new Texture(width,height,(unsigned char*)pixels),width,height,0,0,1,1);
 		break;
+		
+	case IMAGE :
+		{
+			parameter = getAttribute("filename", attr, iAttrCount);
+			if (parameter != NULL) {
+				
+				SDL_Surface * surface = IMG_Load(parameter);
+				if (!surface) {
+					printf("Impossible to load image file : %s\n", parameter);	
+					printf("IMG_Load: %s\n", IMG_GetError());
+					exit(0);
+				}
+
+				unsigned char * pixels = (unsigned char*)surface->pixels;
+				if (surface->format->BytesPerPixel == 3) {
+					pixels = (unsigned char *)malloc(sizeof(unsigned char) * 4 * surface->w* surface->h);
+					TextureGenerator::convert24to32((unsigned char*)surface->pixels, pixels, surface->w, surface->h);
+				}
+				currentRenderable->sprite = new Sprite(new Texture(surface->w, surface->h, pixels), surface->w, surface->h, 0, 0, 1, 1);
+				
+			}
+			else {
+				puts("ERROR for parameter filename");
+			}
+		}
+		break;
+		
 	}
 }
 
@@ -169,4 +197,8 @@ void OGLRenderableFactory::setFactoryCallbacks(XML_Parser p, XML_StartElementHan
 
 IRenderable * OGLRenderableFactory::getRenderable() {
 	return (IRenderable *)currentRenderable;
+}
+
+BoundingBox * OGLRenderable::getBoundingBox() { 
+	return NULL;
 }

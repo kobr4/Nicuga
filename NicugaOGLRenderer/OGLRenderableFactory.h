@@ -27,6 +27,7 @@
 #pragma once
 #include "RenderableAbstractFactory.h"
 #include "Sprite.h"
+class BoundingBox;
 class OGLRenderable
 {
 public:
@@ -34,6 +35,7 @@ public:
 	int blink_hint;
 	int animationType;
 	int iparam1;
+	virtual BoundingBox * getBoundingBox();
 	OGLRenderable(){
 		animationType = 0;
 	};

@@ -215,7 +215,7 @@ void level_start(void *data, const char *el, const char **attr) {
 		level->getHostileManager()->addHostile(id,HostileFactory::loadHostile());
 		break;
 	case SHIP :
-		ShipFactory::setFactoryCallbacks(p,level_start,level_end);
+		ShipFactory::setFactoryCallbacks(p, level_start, level_end, level->getRenderableFactory());
 		level->setShip(ShipFactory::get());
 		level->getShip()->setActive(true);
 		break;

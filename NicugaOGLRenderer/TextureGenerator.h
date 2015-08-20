@@ -48,4 +48,6 @@ public :
 
 	static void blurTexture(unsigned int * pixels,int w,int h, int blurFactor);
 	static void overdraw(unsigned int * pixels, int w,int h, unsigned int * srcpixels, int wsource, int hsource);
+
+	static void convert24to32(unsigned char * sr , unsigned char * dst, int w, int h);
 };

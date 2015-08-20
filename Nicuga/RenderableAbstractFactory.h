@@ -27,10 +27,11 @@
 
 #pragma once
 #include "expat.h"
-
+class BoundingBox;
 class IRenderable
 {
-
+public :
+	virtual BoundingBox * getBoundingBox() { return NULL;}
 };
 
 class RenderableAbstractFactory

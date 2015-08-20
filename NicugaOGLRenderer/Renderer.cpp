@@ -61,6 +61,8 @@ SDL_Surface* CreateSurface(Uint32 flags,int width,int height,const SDL_Surface* 
 
 int Renderer::screenHeight = 640;
 int Renderer::screenWidth = 480;
+bool Renderer::autofire = true;
+float Renderer::tsensitivity = 1000.0f;
 
 void Renderer::init()
 {
@@ -73,7 +75,7 @@ void Renderer::init()
 		exit(1);
 	}
 
-    atexit(SDL_Quit);
+    //atexit(SDL_Quit);
 
      SDL_Init(SDL_INIT_VIDEO);
 
@@ -142,10 +144,10 @@ void Renderer::init()
 	soundManager = new SoundManager();
 	soundManager->init();
 	
-	soundManager->loadMusic("A991Project.ogg");
-	soundManager->playCurrentMusic();
+	//soundManager->loadMusic("A991Project.ogg");
+	//soundManager->playCurrentMusic();
 	
-	soundManager->loadExplosionSound("Grenade-SoundBible.com-1777900486.wav");
+	//soundManager->loadExplosionSound("Grenade-SoundBible.com-1777900486.wav");
 	
 
 
@@ -378,7 +380,13 @@ void Renderer::drawShip(Shader * shader, Ship * ship)
 
 	static int orientation = 0;
 	//orientation++;
-	this->drawSprite(shader,this->spriteShip,x,y,orientation);
+	if (ship->getRenderable() == NULL) {
+		this->drawSprite(shader, this->spriteShip, x, y, orientation);
+	}
+	else {
+		OGLRenderable * renderable = (OGLRenderable *)ship->getRenderable();
+		this->drawSprite(shader, renderable->sprite, x, y, orientation);
+	}
 }
 
 void Renderer::drawHostileInstance(Shader * shader, HostileInstance * hostile)
@@ -432,7 +440,7 @@ void Renderer::drawHostileBullets(Shader * shader)
 				OGLRenderable * renderable = (OGLRenderable *)(*bulletList)[i]->getRenderable();
 				switch (renderable->animationType) {
 				case 1 : 
-					this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,(*bulletList)[i]->getDirection(), 0xff111111, 500,1000+i);
+					//this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,(*bulletList)[i]->getDirection(), 0xff111111, 500,1000+i);
 					break;
 				}
 				this->drawSprite(shader,renderable->sprite,(int)pos.getX(),(int)pos.getY(),0);
@@ -632,12 +640,14 @@ void Renderer::draw()
 	//
 	this->fbAccumulation->unbind(Renderer::screenWidth,Renderer::screenHeight);
 
-	
+	//NO BLUR
+	/*
 	glDisable(GL_BLEND);
 	for (int i = 0;i < 2;i++)
 		blur_framebuffer();
-	
 	glEnable(GL_BLEND);
+	*/
+
 	glBlendFunc(GL_ONE, GL_ONE);
 	
 
@@ -766,6 +776,8 @@ void Renderer::loop()
 		int asynleft = 0;
 		int asynright = 0;
 		int asyncspace = 0;
+		int firedelay = 500;
+		int prev_fire_tick = 0;
 
 	while (!bExit)
 	{
@@ -780,11 +792,17 @@ void Renderer::loop()
 		this->game->run(dt);
 		this->backgroundManager.update(dt);
 
-
+		
 		while( SDL_PollEvent( &event ) )
 		{
 			switch( event.type )
 			{
+			case SDL_FINGERMOTION:
+					//puts("FINGER MOTION");
+					//event.motion.x
+					//printf("X=%f Y=%f DX=%f DY=%f\n", event.tfinger.x, event.tfinger.y, event.tfinger.dx,event.tfinger.dy);
+				this->game->getCurrentLevel()->getShip()->addToPosition(Vector2D(event.tfinger.dx*Renderer::tsensitivity, event.tfinger.dy*Renderer::tsensitivity));
+					break;
 				case SDL_KEYDOWN:
 					switch( event.key.keysym.sym )
 					{
@@ -910,10 +928,15 @@ void Renderer::loop()
 			}
 		}
 
-		if (asyncspace)
-		{
+		if (Renderer::autofire) {
 			this->game->getCurrentLevel()->getShip()->runBarrage(dt);
 		}
+
+		/*
+		if (asyncspace) {
+			this->game->getCurrentLevel()->getShip()->runBarrage(dt);
+		}
+		*/
 
 		/*
 		if (dt < 16)
@@ -926,7 +949,7 @@ void Renderer::loop()
 
 		this->draw();
 
-		SDL_Delay(10);
+		//SDL_Delay(10);
 	}
 
     

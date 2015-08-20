@@ -278,7 +278,10 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 			}
 			*/
 			int direction = this->particles[i].direction;
+
+			// NO DRAW
 			renderer->drawSprite(shader,renderingSprite,this->particles[i].x-3,this->particles[i].y-3,direction,this->particles[i].color,this->particles[i].scale);
+			
 			//renderingSprite->draw();
 
 			if (head != -1) {

@@ -28,10 +28,10 @@
 #pragma once
 #include "expat.h"
 #include "Ship.h"
-
+class RenderableAbstractFactory;
 class ShipFactory
 {
 public :
-	static void ShipFactory::setFactoryCallbacks(XML_Parser p, XML_StartElementHandler start, XML_EndElementHandler end);
+	static void ShipFactory::setFactoryCallbacks(XML_Parser p, XML_StartElementHandler start, XML_EndElementHandler end, RenderableAbstractFactory * renderableFactory);
 	static Ship * ShipFactory::get();
 };

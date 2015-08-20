@@ -51,6 +51,8 @@ public:
 	void setActive(bool active);
 	int getInvicibleTimer();
 	void setInvicibleTimer(int timer);
+	void setRenderable(IRenderable * renderable);
+	IRenderable * getRenderable();
 private:
 	int invicibleTimer;
 	bool active;
@@ -58,5 +60,6 @@ private:
 	BoundingBox boundingBox;
 	std::vector<Barrage*> barrageDataList;
 	std::vector<BarrageInstance*> barrageList;
+	IRenderable * renderable;
 };
 

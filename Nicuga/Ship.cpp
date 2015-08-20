@@ -29,6 +29,7 @@
 
 Ship::Ship(void)
 {
+	this->renderable = NULL;
 }
 
 
@@ -122,4 +123,13 @@ int Ship::getInvicibleTimer()
 void Ship::setInvicibleTimer(int timer)
 {
 	this->invicibleTimer = timer;
+}
+
+void Ship::setRenderable(IRenderable * renderable)
+{
+	this->renderable = renderable;
+}
+IRenderable * Ship::getRenderable()
+{
+	return this->renderable;
 }

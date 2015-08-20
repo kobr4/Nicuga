@@ -491,3 +491,16 @@ void TextureGenerator::generateShape(unsigned int * pixels,int w,int h, unsigned
 
 	hsymetrize(pixels,w,h);
 }
+
+void TextureGenerator::convert24to32(unsigned char * src, unsigned char * dst, int w, int h) {
+	int dstoffset = 0;
+	int srcoffset = 0;
+	for (int i = 0; i < w * h; i++) {
+		dst[dstoffset] = src[srcoffset];
+		dst[dstoffset+1] = src[srcoffset+1];
+		dst[dstoffset+2] = src[srcoffset+2];
+		dst[dstoffset+3] = 0xff;
+		dstoffset += 4;
+		srcoffset += 3;
+	}
+}

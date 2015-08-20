@@ -65,6 +65,8 @@ public :
 	void draw();
 	bool exitstate();
 	int getFps();
+	static bool autofire;
+	static float tsensitivity;
 	ParticleManager * getParticleManager();
 	SoundManager * getSoundManager();
 	void addEffect(T_EFFECT effect);
