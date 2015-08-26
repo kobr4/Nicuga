@@ -51,6 +51,7 @@ void Shader::bind_attributes() {
 	glUniformMatrix4fv(this->modelViewMatrixHandle, 1, 0,this->modelViewMatrix);
 	glUniformMatrix4fv(this->projectionMatrixHandle, 1, 0,this->projectionMatrix);
 	glUniform4fv(this->colorVectorHandle,1,this->colorVector);
+	glUniform4fv(this->colorOverrideVectorHandle, 1, this->colorOverrideVector);
 }
 
 void Shader::bind()
@@ -115,4 +116,5 @@ void Shader::do_register() {
 	this->modelViewMatrixHandle = glGetUniformLocation(this->programHandle, "u_MVMatrix");
 	this->projectionMatrixHandle = glGetUniformLocation(this->programHandle, "u_PMatrix");
 	this->colorVectorHandle = glGetUniformLocation(this->programHandle, "u_CVector");
+	this->colorOverrideVectorHandle = glGetUniformLocation(this->programHandle, "u_COVector");
 }

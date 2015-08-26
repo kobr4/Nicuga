@@ -17,8 +17,8 @@ class Shader{
 	int projectionMatrixHandle;
 	float  colorVector[4];
 	int colorVectorHandle;
-	
-	
+	float colorOverrideVector[4];
+	int colorOverrideVectorHandle;
 public :
 	static int vertexPositionHandle;
 	static int texCoordHandle;
@@ -28,6 +28,10 @@ public :
 		colorVector[1] = 1.0f;
 		colorVector[2] = 1.0f;
 		colorVector[3] = 1.0f;
+		colorOverrideVector[0] = 0.0f;
+		colorOverrideVector[1] = 0.0f;
+		colorOverrideVector[2] = 0.0f;
+		colorOverrideVector[3] = 0.0f;
 	};
 	void load_fragment(const char * filename);
 	void load_vertex(const char * filename);
@@ -38,4 +42,5 @@ public :
 	float * getModelViewMatrix() { return modelViewMatrix;};
 	float * getProjectionMatrix() { return projectionMatrix;};
 	float * getColorVector() {return colorVector;};
+	float * getColorOverrideVector() { return colorOverrideVector; };
 };

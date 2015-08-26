@@ -415,7 +415,15 @@ void Renderer::drawHostileInstance(Shader * shader, HostileInstance * hostile)
 		}
 
 		if (renderable->blink_hint-- > 0) {
-			//this->drawSprite(shader,renderable->sprite,x,y,orientation,0x00000000);
+			shader->getColorOverrideVector()[0] = 1.0f;
+			shader->getColorOverrideVector()[1] = 1.0f;
+			shader->getColorOverrideVector()[2] = 1.0f;
+			shader->getColorOverrideVector()[3] = 1.0f;
+			this->drawSprite(shader,renderable->sprite,x,y,orientation,0x00000000);
+			shader->getColorOverrideVector()[0] = 0.0f;
+			shader->getColorOverrideVector()[1] = 0.0f;
+			shader->getColorOverrideVector()[2] = 0.0f;
+			shader->getColorOverrideVector()[3] = 0.0f;
 		} else {
 			this->drawSprite(shader,renderable->sprite,x,y,orientation,color);
 		}
