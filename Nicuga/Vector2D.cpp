@@ -33,7 +33,7 @@ Vector2D::Vector2D(void)
 	v[1] = 0;
 }
 
-Vector2D::Vector2D(float x, float y)
+Vector2D::Vector2D(short x, short y)
 {
 	this->set(x,y);
 }
@@ -44,7 +44,7 @@ Vector2D::~Vector2D(void)
 }
 
 
-void Vector2D::set(float x, float y)
+void Vector2D::set(short x, short y)
 {
 	v[0] = x;
 	v[1] = y;
@@ -61,7 +61,7 @@ float Vector2D::getY()
 	return v[1];
 }
 
-float Vector2D::distance(float x, float y)
+float Vector2D::distance(short x, short y)
 {
 	return sqrt((v[0] - x) * (v[0] - x) + (v[1] - y) * (v[1] - y));
 }

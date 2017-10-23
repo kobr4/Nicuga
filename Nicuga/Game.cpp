@@ -243,13 +243,13 @@ int Game::getCurrentLevelPosition()
 	return this->currentLevelPosition;
 }
 
-void Game::setOnDestroyCallback(void (*onDestroyCallback)(void * userdata, unsigned int bulletId,Ship*ship,HostileInstance*hostile, float x, float y),void * userdata)
+void Game::setOnDestroyCallback(void (*onDestroyCallback)(void * userdata, unsigned int bulletId,Ship*ship,HostileInstance*hostile, short x, short y),void * userdata)
 {
 	this->onDestroyCallback = onDestroyCallback;
 	this->onDestroyCallbackUserData = userdata;
 }
 
-void Game::setOnHitCallback(void (*onHitCallback)(void * userdata, unsigned int bulletId,Ship*ship,HostileInstance*hostile, float x, float y),void * userdata)
+void Game::setOnHitCallback(void (*onHitCallback)(void * userdata, unsigned int bulletId,Ship*ship,HostileInstance*hostile, short x, short y),void * userdata)
 {
 	this->onHitCallback = onHitCallback;
 	this->onHitCallbackUserData = userdata;

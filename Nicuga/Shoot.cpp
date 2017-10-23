@@ -172,8 +172,8 @@ void Shoot::run(long dt)
 {
 	this->age += dt;
 
-	float posx = this->initialPosition.getX() + FastMath::fastCos((int)direction + 90) * this->speed * (float)this->age * 1/1000.0f;
-	float posy = this->initialPosition.getY() + FastMath::fastSin((int)direction + 90) * this->speed * (float)this->age * 1/1000.0f;
+	short posx = this->initialPosition.getX() + FastMath::fastCos((int)direction + 90) * this->speed * (float)this->age * 1/1000.0f;
+	short posy = this->initialPosition.getY() + FastMath::fastSin((int)direction + 90) * this->speed * (float)this->age * 1/1000.0f;
 	this->position.set(posx,posy);
 
 	if (this->useScript)

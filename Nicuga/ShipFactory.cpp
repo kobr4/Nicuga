@@ -45,10 +45,10 @@ void ship_xmlstart(void *data, const char *el, const char **attr)
 	int iAttrCount = XML_GetSpecifiedAttributeCount(currentParer);
 	//printf("ShipFactory TAG : %s %d attributes\n",el,iAttrCount);
 	const char * id;
-	int topx = 0;
-	int topy = 0;
-	int bottomx = 0;
-	int bottomy = 0;
+	short topx = 0;
+	short topy = 0;
+	short bottomx = 0;
+	short bottomy = 0;
 
 	switch(getTagType(el))
 	{
@@ -66,7 +66,7 @@ void ship_xmlstart(void *data, const char *el, const char **attr)
 			}
         }
 		
-		currentShip->setBoundingBox(BoundingBox((float)topx,(float)topy,(float)bottomx,(float)bottomy));
+		currentShip->setBoundingBox(BoundingBox(topx,topy,bottomx,bottomy));
 		break;
 	case RENDERABLE:
 		g_renderableFactory->setFactoryCallbacks(currentParer, ship_xmlstart, ship_xmlend);

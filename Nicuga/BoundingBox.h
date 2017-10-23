@@ -31,13 +31,13 @@ class BoundingBox
 {
 public:
 	BoundingBox(void);
-	BoundingBox(float topx,float topy, float bottomx,float bottomy);
+	BoundingBox(short topx,short topy, short bottomx,short bottomy);
 	~BoundingBox(void);
 	bool isBound(Vector2D point);
 	Vector2D getTopLeft();
 	Vector2D getBottomRight();
-	void setTopLeft(float topx,float topy);
-	void setBottomRight(float bottomx,float bottomy);
+	void setTopLeft(short topx,short topy);
+	void setBottomRight(short bottomx,short bottomy);
 private:
 	Vector2D topLeft;
 	Vector2D bottomRight;

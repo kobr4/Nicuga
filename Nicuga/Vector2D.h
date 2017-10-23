@@ -31,12 +31,12 @@ class Vector2D
 	float v[2];
 public:
 	Vector2D();
-	Vector2D(float x, float y);
+	Vector2D(short x, short y);
 	~Vector2D(void);
-	void set(float x, float y);
+	void set(short x, short y);
 	float getX();
 	float getY();
-	float distance(float x, float y);
+	float distance(short x, short y);
 	Vector2D operator+(Vector2D arg);
 };
 

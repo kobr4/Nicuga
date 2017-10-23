@@ -32,7 +32,7 @@ BoundingBox::BoundingBox(void)
 {
 }
 
-BoundingBox::BoundingBox(float topx,float topy, float bottomx,float bottomy)
+BoundingBox::BoundingBox(short topx,short topy, short bottomx,short bottomy)
 {
 	topLeft.set(topx,topy);
 	bottomRight.set(bottomx,bottomy);
@@ -62,12 +62,12 @@ Vector2D BoundingBox::getBottomRight()
 	return this->bottomRight;
 }
 
-void BoundingBox::setTopLeft(float topx,float topy)
+void BoundingBox::setTopLeft(short topx,short topy)
 {
 	topLeft.set(topx,topy);
 }
 
-void BoundingBox::setBottomRight(float bottomx,float bottomy)
+void BoundingBox::setBottomRight(short bottomx,short bottomy)
 {
 	bottomRight.set(bottomx,bottomy);
 }
