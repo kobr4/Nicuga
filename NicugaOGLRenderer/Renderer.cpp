@@ -48,6 +48,7 @@
 #include "Texture.h"
 #include "BackgroundLayer.h"
 #include "FastMath.h"
+#include "BufferData.h"
 
 unsigned char g_texdata[]= { 255, 255, 255, 255, 255, 255, 255, 255,
 							255, 255, 255, 255, 255, 255, 255, 255};
@@ -166,6 +167,9 @@ void Renderer::init()
 	this->fbDrawing = NULL;
 	this->fbHalfRes1 = NULL;
 	this->fbHalfRes2 = NULL;
+
+	this->lineBufferData = NULL;
+	this->lineBufferPos = 0;
 
 	shaderTexturing = new Shader();
 	shaderTexturing->load_fragment("fragment_texturing.gl");
@@ -480,7 +484,10 @@ void Renderer::drawShipBullets(Shader * shader)
 				switch (renderable->animationType) {
 				//trail
 				case 1 : 
-					this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,0, 0xffaa3333, renderable->iparam1,1000+i,this->spriteCircle,1.0f,-0.04f);
+
+					//this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f,0, 0xffaa3333, renderable->iparam1,1000,this->spriteCircle,1.0f,-0.04f);
+					
+					this->particleManager->addParticle(pos.getX(), pos.getY(), 0.0f, 0, 0xffaa3333, renderable->iparam1, 1000 + i, this->spriteCircle, 1.0f, 0.f);
 					break;
 				}
 				this->drawSprite(shader,renderable->sprite,(int)pos.getX(),(int)pos.getY(),0);
@@ -505,37 +512,7 @@ void Renderer::drawHostiles(Shader * shader)
 
 void Renderer::blur_framebuffer() {
 	this->shaderTexturing->unbind();
-	/*
-	this->fbHalfRes1->bind();
-	memcpy(this->shaderGaussianBlurHorizontal->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
-	this->shaderGaussianBlurHorizontal->bind();
-	this->spriteAccumulation->draw();
-	this->shaderGaussianBlurHorizontal->unbind();
-	this->fbHalfRes1->unbind(640,480);
-	
-	this->fbAccumulation->bind();
-	//memcpy(this->shaderGaussianBlurVertical->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
-	//this->shaderGaussianBlurVertical->bind();
-	memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
-	this->shaderTexturing->bind();
-	this->spriteHalfRes1->draw();
-	this->shaderTexturing->unbind();
-	this->fbAccumulation->unbind(640,480);
-	
-	this->fbHalfRes1->bind();
-	memcpy(this->shaderGaussianBlurVertical->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
-	this->shaderGaussianBlurVertical->bind();
-	this->spriteAccumulation->draw();
-	this->shaderGaussianBlurVertical->unbind();
-	this->fbHalfRes1->unbind(640,480);
-	
-	this->fbAccumulation->bind();
-	memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
-	this->shaderTexturing->bind();
-	this->spriteHalfRes1->draw();
-	this->shaderTexturing->unbind();
-	this->fbAccumulation->unbind(640,480);
-	*/
+
 	this->fbHalfRes1->bind();
 	memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
 	this->shaderTexturing->bind();
@@ -598,6 +575,23 @@ void Renderer::draw()
 		this->spriteHalfRes2 = new Sprite(this->fbHalfRes2->getTexture(),Renderer::screenWidth,Renderer::screenHeight,0,0,1,1);
 	}
 
+	/*
+	for (int i = 0; i < 166; i++) {
+		//float y1 = (float)(rand() % 640);
+		//float x1 = (float)(rand() % 480);
+		//float y2 = (float)(rand() % 640);
+		//float x2 = (float)(rand() % 480);
+		//float x2 = x1 + 3.f;
+		//float y2 = y1 + 3.f;
+		this->addLine(0.f, 0.f+2*i, 1.0f, 1.0f, 1.0F, 480, 0.f+2*i, 1.0f, 1.0f, 1.0f);
+	}
+	*/
+	
+	/*
+	for (int i = 0; i < 100; i++) {
+		this->addLine(0.f+i, 100.f, 1.0f, 1.0f, 1.0F, 1.f+i, 100.f, 1.0f, 1.0f, 1.0f);
+	}
+	*/
 	//OpenGL setup
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT); 
@@ -636,18 +630,27 @@ void Renderer::draw()
 
 
 	//glDisable(GL_BLEND);
+
 	this->particleManager->drawParticles(this->shaderTexturing,this->spriteBullet,this);
+
+	memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()), sizeof(float) * 16);
+	this->drawLineBuffer(this->shaderTexturing);
+
+
 	//glEnable(GL_BLEND);
-	//
+	
 	this->drawHostileBullets(this->shaderTexturing);
 	this->drawShipBullets(this->shaderTexturing);
 		
 	if (this->game->getCurrentLevel()->getShip()->isActive())
 		this->drawShip(this->shaderTexturing,this->game->getCurrentLevel()->getShip());
 	this->drawHostiles(this->shaderTexturing);
-	//
-	this->fbAccumulation->unbind(Renderer::screenWidth,Renderer::screenHeight);
+	
 
+
+
+	this->fbAccumulation->unbind(Renderer::screenWidth,Renderer::screenHeight);
+	
 	//NO BLUR
 	/*
 	glDisable(GL_BLEND);
@@ -660,7 +663,9 @@ void Renderer::draw()
 	
 
 	this->fbDrawing->bind();
+	
 	glClear(GL_COLOR_BUFFER_BIT); 
+	/*
 	memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
 	this->shaderTexturing->bind_attributes();
 	this->backgroundManager.draw(this->shaderTexturing);
@@ -679,6 +684,9 @@ void Renderer::draw()
 	if (this->game->getCurrentLevel()->getShip()->isActive())
 		this->drawShip(this->shaderTexturing,this->game->getCurrentLevel()->getShip());
 	this->drawHostiles(this->shaderTexturing);
+	*/
+
+
 
 	//glBlendFunc(GL_DST_COLOR, GL_ZERO);
 	
@@ -695,8 +703,6 @@ void Renderer::draw()
 	//glEnable(GL_BLEND);
 
 	glBlendFunc(GL_ONE, GL_ONE);
-
-
 
 
 	for (int i = 0;i < 10;i++) {
@@ -718,16 +724,17 @@ void Renderer::draw()
 	this->getSoundManager()->bassDetect = (unsigned int)d / 10;	
 	}
 
-	char s_bass[256];
-		unsigned int toto = getSoundManager()->bassDetect / 100000;
-		sprintf(s_bass,"Bass %d",toto);
-		this->drawMessage(s_bass,ALIGNLEFT,ALIGNBOTTOM);
-		memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
-		this->shaderTexturing->bind_attributes();	
-		this->spriteBullet->updateQuad(0,0,toto*10.f,toto*10.0f);
-		this->drawSprite(this->shaderTexturing,this->spriteBullet,0,0,0);
-		this->spriteBullet->updateQuad(0,0,5.f,5.f);
-	//}
+	//char s_bass[256];
+	//unsigned int toto = getSoundManager()->bassDetect / 100000;
+	//sprintf(s_bass,"Bass %d",toto);
+	//this->drawMessage(s_bass,ALIGNLEFT,ALIGNBOTTOM);
+		
+	//memcpy(this->shaderTexturing->getModelViewMatrix(), glm::value_ptr(glm::mat4()),sizeof(float)*16);
+	//this->shaderTexturing->bind_attributes();	
+	//this->spriteBullet->updateQuad(0,0,toto*10.f,toto*10.0f);
+	//this->drawSprite(this->shaderTexturing,this->spriteBullet,0,0,0);
+	//this->spriteBullet->updateQuad(0,0,5.f,5.f);
+	
 
 
 	this->fbDrawing->unbind(Renderer::screenWidth,Renderer::screenHeight);
@@ -806,9 +813,6 @@ void Renderer::loop()
 			switch( event.type )
 			{
 			case SDL_FINGERMOTION:
-					//puts("FINGER MOTION");
-					//event.motion.x
-					//printf("X=%f Y=%f DX=%f DY=%f\n", event.tfinger.x, event.tfinger.y, event.tfinger.dx,event.tfinger.dy);
 				this->game->getCurrentLevel()->getShip()->addToPosition(Vector2D(event.tfinger.dx*Renderer::tsensitivity, event.tfinger.dy*Renderer::tsensitivity));
 					break;
 				case SDL_KEYDOWN:
@@ -1114,14 +1118,6 @@ void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, Hosti
 			effect.effectType = 3;
 			renderer->addEffect(effect);	
 		}
-
-		/*
-		if (hostile->getScore() > 1000){
-			effect.duration = 30;
-			effect.effectType = 1;
-			renderer->addEffect(effect;)w
-		}
-		*/
 	}
 
 	
@@ -1130,15 +1126,20 @@ void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, Hosti
 		renderer->getParticleManager()->deactivateTrail(bulletId);
 	}
 
+	//renderer->getParticleManager()->addParticle(x - 10.f, y - 10.f, 0.f, 0, 0xffaaaaaa, 500, -1, renderer->spriteCircle, 0.2f, 0.4f);
 	for (int i = 0;i < 10;i++)
 	{
 		//unsigned int color = (rand()%200 << 16) |  (rand()%200) << 8 | (rand()%200);
 
-		unsigned int a = rand()%100+100;
-		unsigned int color = (a << 16) |  (a) << 8 | (a);
+		unsigned int a = rand()%255;
+		unsigned int color = (0xff << 16) |  (a) << 8 | (0x00);
 		//unsigned int color = 0xffff00000;
-		renderer->getParticleManager()->addParticleRandom(x,y,color,renderer->spriteBullet);
 		
+		//renderer->getParticleManager()->addParticleRandom(x,y,color,renderer->spriteBullet);
+		unsigned int wo = rand() % 20;
+		unsigned int ho = rand() % 20;
+	
+		renderer->getParticleManager()->addParticle(x - 10.f + wo, y - 10.f + ho, 0.f, 0, color, 500, -1, renderer->spriteCircle, 0.04f, 0.1f);
 	}
 }
 
@@ -1147,5 +1148,94 @@ void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileIn
 	if (hostile != NULL) {
 		OGLRenderable * renderable = (OGLRenderable*)hostile->getRenderable();
 		renderable->blink_hint = 10;
+
+		Renderer * renderer = (Renderer *)userdata;
+		for (int i = 0; i < 10; i++)
+		{
+			unsigned int color = 0xffffffff;
+			renderer->getParticleManager()->addParticleRandom(x, y, color, renderer->spriteBullet);
+		}
+
 	}
+}
+
+void Renderer::addLine(float x1, float y1, float r1, float g1, float b1, float x2, float y2, float r2, float g2, float b2) {
+	/*
+	y1 = (float)(rand() % 640);
+	x1 = (float)(rand() % 480);
+	y2 = (float)(rand() % 640);
+	x2 = (float)(rand() % 480);
+	*/
+	/*
+	x1 = round(x1+100.f);
+	y1 = round(100.f);
+	x2 = round(x2+100.f);
+	y2 = round(100.f);
+	*/
+	if (this->lineBufferPos + 12 >= 10000) {
+		return;
+	}
+
+
+	this->lineBuffer[this->lineBufferPos + 0] = x1;
+	this->lineBuffer[this->lineBufferPos + 1] = y1;
+	this->lineBuffer[this->lineBufferPos + 2] = 0.f;
+	this->lineBuffer[this->lineBufferPos + 3] = r1;
+	this->lineBuffer[this->lineBufferPos + 4] = g1;
+	this->lineBuffer[this->lineBufferPos + 5] = b1;
+	this->lineBuffer[this->lineBufferPos + 6] = x2;
+	this->lineBuffer[this->lineBufferPos + 7] = y2;
+	this->lineBuffer[this->lineBufferPos + 8] = 0.f;
+	this->lineBuffer[this->lineBufferPos + 9] = r2;
+	this->lineBuffer[this->lineBufferPos + 10] = g2;
+	this->lineBuffer[this->lineBufferPos + 11] = b2;
+	this->lineBufferPos+=12;
+
+	//printf("line %d : %f %f : %f %f\n", this->lineBufferPos, x1, y1, x2, y2);
+}
+
+void Renderer::resetLineBuffer() {
+	this->lineBufferPos = 0;
+}
+
+void Renderer::drawLineBuffer(Shader * shader) {
+	shader->getColorVector()[0] = 1.0f;
+	shader->getColorVector()[1] = 1.0f;
+	shader->getColorVector()[2] = 1.0f;
+	shader->getColorVector()[3] = 1.0f;
+
+	//glEnable(GL_TEXTURE_2D);
+	if (this->lineBufferPos == 0) {
+		return;
+	}
+
+	if (this->lineBufferData == NULL) {
+		this->lineBufferData = new BufferData((char*)this->lineBuffer, 4 * this->lineBufferPos);
+	}
+	this->lineBufferData->updateBuffer(this->lineBufferPos*sizeof(float));
+
+	this->lineBufferData->bind();
+
+	this->spriteBullet->getTexture()->bind();
+	shader->bind_attributes();
+
+
+	glVertexPointer(3, GL_FLOAT, 6 * sizeof(float), 0);
+
+	glVertexAttribPointer(Shader::vertexPositionHandle, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+	glEnableVertexAttribArray(Shader::vertexPositionHandle);
+
+	glVertexAttribPointer(Shader::vertexColorHandle, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(Shader::vertexColorHandle);
+
+	//glVertexAttribPointer(Shader::texCoordHandle, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(Shader::texCoordHandle);
+
+	glDrawArrays(GL_LINES, 0, this->lineBufferPos / 6);
+	
+	this->lineBufferData->unbind();
+	this->spriteBullet->getTexture()->unbind();
+	 
+	this->resetLineBuffer();
+
 }

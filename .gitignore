@@ -12,10 +12,17 @@
 *.la
 *.a
 
-*(1).*
-*.opensdf
-*.sdf
+# VS solution file
+*.sln
+*.vcxproj
+*.vcxproj.filters
 *.suo
+*.sdf
+*.opensdf
+
+#Debug / Release directory
+Debug/
+Release/
 
 Debug/
 ipch/

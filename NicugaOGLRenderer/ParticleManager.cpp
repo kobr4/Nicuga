@@ -209,7 +209,7 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 	{
 		if (this->particles[i].active == true)
 		{
-			if (((int)this->particles[i].y < 0) ||(((int)this->particles[i].x < 0)))
+			if (((int)this->particles[i].y < 0) || (((int)this->particles[i].x < 0)))
 			{
 				this->particles[i].active = false;
 				continue;
@@ -219,15 +219,16 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 			int head = -1;
 			int trailId = this->particles[i].trailId;
 			if (trailId != -1) {
-				for (int j = 0;j < 1000;j++) {
-					if ((this->particles[j].active == true) && (this->particles[j].trailId == trailId)&& (i!=j)) {
+				for (int j = 0; j < 1000; j++) {
+					if ((this->particles[j].active == true) && (this->particles[j].trailId == trailId) && (i != j)) {
 						if (this->particles[i].currentLifeTime > this->particles[j].currentLifeTime) {
 							if (head == -1) {
 								head = j;
-							} else if ((this->particles[i].currentLifeTime - this->particles[j].currentLifeTime) < 
+							}
+							else if ((this->particles[i].currentLifeTime - this->particles[j].currentLifeTime) <
 								(this->particles[i].currentLifeTime - this->particles[head].currentLifeTime)){
 								head = j;
-							}				
+							}
 						}
 
 					}
@@ -237,8 +238,8 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 			/*
 			if (((int)this->particles[i].y > surface->h) ||(((int)this->particles[i].x > surface->w)))
 			{
-				this->particles[i].active = false;
-				continue;
+			this->particles[i].active = false;
+			continue;
 			}
 			*/
 			//printf("PARTICLE DRAW %d %d %d %d\n",(int)this->particles[i].x,(int)this->particles[i].y,this->particles[i].currentLifeTime,this->particles[i].lifetime);
@@ -250,44 +251,54 @@ void ParticleManager::drawParticles(Shader * shader,Sprite * sprite, Renderer * 
 			*p= 0xff;
 			*/
 			//drawSquare(surface,(int)this->particles[i].x-3,(int)this->particles[i].y-3, 6, 6,0xff000000);
-			
+
 			//glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(this->particles[i].x-3, this->particles[i].y-3, 0.0f));
 			//memcpy(shader->getModelViewMatrix(), glm::value_ptr(myMatrix),sizeof(float)*16);
 
 			shader->bind_attributes();
 
-			Sprite * renderingSprite = this->particles[i].sprite!=NULL ? this->particles[i].sprite : sprite; 
+			Sprite * renderingSprite = this->particles[i].sprite != NULL ? this->particles[i].sprite : sprite;
 
 			if (head != -1) {
-				float xdest = this->particles[i].x > this->particles[head].x ? -abs(this->particles[i].x - this->particles[head].x) : abs(this->particles[i].x - this->particles[head].x);
-				float ydest = this->particles[i].y > this->particles[head].y ? -abs(this->particles[i].y - this->particles[head].y) : abs(this->particles[i].y - this->particles[head].y);
-				
+				//float xdest = this->particles[i].x > this->particles[head].x ? -abs(this->particles[i].x - this->particles[head].x) : abs(this->particles[i].x - this->particles[head].x);
+				//float ydest = this->particles[i].y > this->particles[head].y ? -abs(this->particles[i].y - this->particles[head].y) : abs(this->particles[i].y - this->particles[head].y);
+
 				//if (ydest > 20.f) {
 				//	printf("BUG ! head=%d i lf=%d head lf=%d f=%f\n",head, this->particles[i].currentLifeTime, this->particles[head].currentLifeTime,this->particles[head].y);
 				//}
 
 				// No sprite rescale
 				//renderingSprite->updateQuad(0,0,xdest,ydest,xdest+5.f,ydest+0.f,5.f,0.f);
+				
+				
+				//renderer->addLine(this->particles[i].x, this->particles[i].y, 1.0f, 1.0f, 1.0f, this->particles[head].x, this->particles[head].y, 1.0f, 1.0F, 1.0f);
+				
+				//renderer->drawSprite(shader, renderingSprite, this->particles[head].x - 3, this->particles[head].y - 3, this->particles[head].direction, this->particles[head].color, this->particles[head].scale);
+				//renderer->addLine(this->particles[i].x, this->particles[i].y, 1.0f, 1.0f, 1.0f, this->particles[i].x+100.f, this->particles[i].y, 1.0f, 1.0F, 1.0f);
+				//renderer->addLine(this->particles[i].x-100.f, this->particles[i].y, 1.0f, 1.0f, 1.0f, this->particles[i].x, this->particles[i].y, 1.0f, 1.0F, 1.0f);
+				renderer->addLine(this->particles[i].x, this->particles[i].y, 1.0f, 1.0f, 1.0f, this->particles[head].x, this->particles[head].y, 1.0f, 1.0F, 1.0f);
 			}
 			float scale = 1.0f;
-			
+
 			// scale effect lifetime proportional.
 			/*
 			if (this->particles[i].trailId == -1) {
-				scale = (this->particles[i].lifetime - this->particles[i].currentLifeTime) / 100.f;
+			scale = (this->particles[i].lifetime - this->particles[i].currentLifeTime) / 100.f;
 			}
 			*/
 			int direction = this->particles[i].direction;
 
 			// NO DRAW
-			renderer->drawSprite(shader,renderingSprite,this->particles[i].x-3,this->particles[i].y-3,direction,this->particles[i].color,this->particles[i].scale);
-			
+			if (head == -1) {
+				renderer->drawSprite(shader, renderingSprite, this->particles[i].x - 3, this->particles[i].y - 3, direction, this->particles[i].color, this->particles[i].scale);
+			}
 			//renderingSprite->draw();
 
 			if (head != -1) {
 				//renderingSprite->updateQuad(0,0,5.f,5.f);
 			}
 		}
+		
 	}
 }
 

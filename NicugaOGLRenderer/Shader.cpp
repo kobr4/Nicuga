@@ -7,6 +7,7 @@
 
 int Shader::vertexPositionHandle = 1;
 int Shader::texCoordHandle = 2;
+int Shader::vertexColorHandle = 3;
 
 void load_string(const char * filename,int &length,char **&string, int *&stringlength) {
 	char s[2048];
@@ -110,6 +111,7 @@ void Shader::do_register() {
 
 	glBindAttribLocation(this->programHandle, Shader::vertexPositionHandle, "a_Position");
 	glBindAttribLocation(this->programHandle, Shader::texCoordHandle, "a_TexCoord");
+	glBindAttribLocation(this->programHandle, Shader::vertexColorHandle, "a_Color");
 
 	glLinkProgram(this->programHandle);
 

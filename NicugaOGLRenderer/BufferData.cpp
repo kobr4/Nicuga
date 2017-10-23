@@ -12,7 +12,10 @@ void BufferData::do_register() {
 	updateBuffer();
 }
 
-void BufferData::updateBuffer() {
+void BufferData::updateBuffer(int newSize) {
+	if (newSize != 0) {
+		this->bufferSize = newSize;
+	}
 	glBindBuffer(GL_ARRAY_BUFFER, this->bufferName);
 	glBufferData(GL_ARRAY_BUFFER,this->bufferSize,this->bufferData,GL_DYNAMIC_DRAW);   
 }

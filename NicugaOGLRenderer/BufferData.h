@@ -6,7 +6,7 @@ class BufferData {
 	int bufferSize;
 public :
 	BufferData(char * bufferData,int bufferSize);
-	void updateBuffer();
+	void updateBuffer(int newSize = 0);
 	void do_register();
 	void bind();
 	void unbind();

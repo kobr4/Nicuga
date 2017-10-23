@@ -18,6 +18,7 @@ public :
 	float getY() { return this->y;}
 	float getHeight() { return this->height;}
 	float getWidth() { return this->width;}
+	Texture * getTexture() { return this->texture; }
 protected :
 	Texture * texture;
 	BufferData * bufferData;

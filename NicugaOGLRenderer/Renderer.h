@@ -36,6 +36,7 @@ class SoundManager;
 class Sprite;
 class FrameBuffer;
 class Shader;
+class BufferData;
 
 enum RendererTextAlign
 {
@@ -80,7 +81,16 @@ public :
 	Sprite * spriteTextSurface;
 	Sprite * spriteRectangle;
 	Sprite * spriteCircle;
+	void addLine(float x1, float y1, float r1, float g1, float b1, float x2, float y2, float r2, float g2, float b2);
 private :
+	// Line drawing
+	float lineBuffer[10000];
+	int lineBufferPos;
+
+	void resetLineBuffer();
+	void drawLineBuffer(Shader * shader);
+	BufferData * lineBufferData;
+
 	unsigned int frameCounter;
 	FrameBuffer * fbDrawing;
 	FrameBuffer * fbHalfRes1;

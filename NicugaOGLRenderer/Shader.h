@@ -22,6 +22,7 @@ class Shader{
 public :
 	static int vertexPositionHandle;
 	static int texCoordHandle;
+	static int vertexColorHandle;
 	Shader() {
 		programHandle = 0;
 		colorVector[0] = 1.0f;
@@ -32,6 +33,8 @@ public :
 		colorOverrideVector[1] = 0.0f;
 		colorOverrideVector[2] = 0.0f;
 		colorOverrideVector[3] = 0.0f;
+		vertexColorHandle = 0;
+		texCoordHandle = 0;
 	};
 	void load_fragment(const char * filename);
 	void load_vertex(const char * filename);
