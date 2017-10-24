@@ -20,7 +20,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -96,6 +96,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureGenerator.cpp" />
     <ClCompile Include="Vector2D.cpp" />
@@ -110,6 +111,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteBatch.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureGenerator.h" />
     <ClInclude Include="Vector2D.h" />
