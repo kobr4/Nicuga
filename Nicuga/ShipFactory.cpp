@@ -45,10 +45,10 @@ void ship_xmlstart(void *data, const char *el, const char **attr)
 	int iAttrCount = XML_GetSpecifiedAttributeCount(currentParer);
 	//printf("ShipFactory TAG : %s %d attributes\n",el,iAttrCount);
 	const char * id;
-	short topx = 0;
-	short topy = 0;
-	short bottomx = 0;
-	short bottomy = 0;
+	int topx = 0;
+	int topy = 0;
+	int bottomx = 0;
+	int bottomy = 0;
 
 	switch(getTagType(el))
 	{

@@ -50,20 +50,20 @@ void Vector2D::set(short x, short y)
 	v[1] = y;
 }
 
-float Vector2D::getX()
+short Vector2D::getX()
 {
 	return v[0];
 }
 
 
-float Vector2D::getY()
+short Vector2D::getY()
 {
 	return v[1];
 }
 
-float Vector2D::distance(short x, short y)
+short Vector2D::distance(short x, short y)
 {
-	return sqrt((v[0] - x) * (v[0] - x) + (v[1] - y) * (v[1] - y));
+	return ((v[0] - x) * (v[0] - x) + (v[1] - y) * (v[1] - y));
 }
 
 Vector2D Vector2D::operator+(Vector2D arg) {

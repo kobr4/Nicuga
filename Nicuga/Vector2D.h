@@ -28,15 +28,15 @@
 #pragma once
 class Vector2D
 {
-	float v[2];
+	short v[2];
 public:
 	Vector2D();
 	Vector2D(short x, short y);
 	~Vector2D(void);
 	void set(short x, short y);
-	float getX();
-	float getY();
-	float distance(short x, short y);
+	short getX();
+	short getY();
+	short distance(short x, short y);
 	Vector2D operator+(Vector2D arg);
 };
 

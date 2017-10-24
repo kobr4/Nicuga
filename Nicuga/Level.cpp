@@ -255,8 +255,7 @@ void level_start(void *data, const char *el, const char **attr) {
 					sscanf(attr[i+1],"%d,%d",&bottomx,&bottomy);
 			}
         }
-		
-		level->setBoundingBox(BoundingBox((float)topx,(float)topy,(float)bottomx,(float)bottomy));
+		level->setBoundingBox(BoundingBox((short)topx,(short)topy,(short)bottomx,(short)bottomy));
 		break;
 	default :
 		break;
@@ -351,8 +350,8 @@ void Level::load(char * filename,RenderableAbstractFactory * renderableFactory)
 
 void Level::respawnShip()
 {
-	this->ship->setPosition((this->boundingBox.getTopLeft().getX()-this->boundingBox.getBottomRight().getX())/2.0f,
-		(this->boundingBox.getTopLeft().getY()-this->boundingBox.getBottomRight().getY())/2.0f);
+	this->ship->setPosition((this->boundingBox.getTopLeft().getX()-this->boundingBox.getBottomRight().getX())/2,
+		(this->boundingBox.getTopLeft().getY()-this->boundingBox.getBottomRight().getY())/2);
 }
 
 HostileManager * Level::getHostileManager()

@@ -85,7 +85,7 @@ Barrage * BarrageManager::getBarrage(const char * id)
 }
 
 void Barrage::setOffsetPosition(int offsetx,int offsety) {
-	this->offset_position.set((float)offsetx,(float)offsety);
+	this->offset_position.set((short)offsetx,(short)offsety);
 }
 
 BarrageInstance * BarrageManager::getBarrageInstance(const char * id)

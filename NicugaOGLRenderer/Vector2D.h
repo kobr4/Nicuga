@@ -28,20 +28,20 @@
 #pragma once
 class Vector2D
 {
-	float v[2];
+	short v[2];
 public:
 	Vector2D();
-	Vector2D(float x, float y);
+	Vector2D(short x, short y);
 	~Vector2D(void);
-	void set(float x, float y);
-	float getX();
-	float getY();
-	float distance(float x, float y);
+	void set(short x, short y);
+	short getX();
+	short getY();
+	short distance(short x, short y);
 	void normalize();
-	float dot(Vector2D vec);
-	float cross(Vector2D vec);
+	short dot(Vector2D vec);
+	short cross(Vector2D vec);
 	Vector2D operator+(Vector2D arg);
 	Vector2D operator-(Vector2D arg);
-	Vector2D operator*(float arg);
+	Vector2D operator*(short arg);
 };
 

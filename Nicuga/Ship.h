@@ -46,7 +46,7 @@ public:
 	void addBarrageInstance(BarrageInstance*);
 	void addBarrage(Barrage*);
 	void runBarrage(long dt);
-	void setPosition(float x, float y);
+	void setPosition(short x, short y);
 	bool isActive();
 	void setActive(bool active);
 	int getInvicibleTimer();

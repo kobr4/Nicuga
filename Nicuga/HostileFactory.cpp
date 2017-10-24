@@ -68,7 +68,7 @@ void hostile_xmlstart(void *data, const char *el, const char **attr)
 			}
         }
 		
-		currentHostile->setBoundingBox(BoundingBox((float)topx,(float)topy,(float)bottomx,(float)bottomy));
+		currentHostile->setBoundingBox(BoundingBox((short)topx,(short)topy,(short)bottomx,(short)bottomy));
 		break;
 	case BARRAGE :
 		level = (Level*)oldUserData;

@@ -100,7 +100,7 @@ void Ship::runBarrage(long dt)
 	}
 }
 
-void Ship::setPosition(float x, float y)
+void Ship::setPosition(short x, short y)
 {
 	this->position.set(x,y);
 }

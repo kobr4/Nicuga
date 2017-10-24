@@ -53,8 +53,8 @@
 unsigned char g_texdata[]= { 255, 255, 255, 255, 255, 255, 255, 255,
 							255, 255, 255, 255, 255, 255, 255, 255};
 
-void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, float x, float y);
-void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, float x, float y);
+void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, short x, short y);
+void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, short x, short y);
 
 int thread_func(void *data);
 SDL_Surface* CreateSurface(Uint32 flags,int width,int height,const SDL_Surface* display);
@@ -210,7 +210,7 @@ void Renderer::init()
 	this->spriteTextSurface = new Sprite(textSurfaceTexture,Renderer::screenWidth,Renderer::screenHeight,0,1,1,0);
 
 	this->spriteShip = new Sprite(new Texture(30,30,(unsigned char*)pixels),30.f,30.f,1,1,0,0);
-
+	
 	unsigned int * pixelsgrid = (unsigned int*)malloc(sizeof(unsigned int)* 100 * 100);
 	TextureGenerator::generateGrid(pixelsgrid,100,100,20,0xff0909aa);
 	this->spriteGrid = new Sprite(new Texture(100,100,(unsigned char*)pixelsgrid),100.f,100.f,0,0,1,1);
@@ -229,7 +229,6 @@ void Renderer::init()
 	backgroundLayer = new BackgroundLayer(Renderer::screenWidth,Renderer::screenHeight,0.0,-1.0f);
 	backgroundLayer->addElement(new Sprite(new Texture(100,100,(unsigned char*)pixelsStarfield2),100.f,100.f,0,0,1,1),100,100);
 	this->backgroundManager.addLayer(backgroundLayer);
-	
 }
 
 
@@ -1097,7 +1096,7 @@ SoundManager * Renderer::getSoundManager()
 	return this->soundManager;
 }
 
-void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, float x, float y)
+void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, short x, short y)
 {
 	Renderer * renderer =(Renderer *)userdata; 
 	renderer->getSoundManager()->playExplosionSound();
@@ -1143,7 +1142,7 @@ void onDestroyCallback(void * userdata, unsigned int bulletId,Ship * ship, Hosti
 	}
 }
 
-void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, float x, float y)
+void onHitCallback(void * userdata, unsigned int bulletId,Ship * ship, HostileInstance * hostile, short x, short y)
 {
 	if (hostile != NULL) {
 		OGLRenderable * renderable = (OGLRenderable*)hostile->getRenderable();
